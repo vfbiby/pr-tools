@@ -2,7 +2,7 @@ import type {PlasmoCSConfig, PlasmoGetInlineAnchor} from "plasmo"
 import {useEffect, useState} from "react";
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://www.xiaohongshu.com/explore/*"]
+  matches: ["https://www.xiaohongshu.com/user/profile/*", "https://www.xiaohongshu.com/explore*"]
 }
 
 export const getInlineAnchor: PlasmoGetInlineAnchor = () =>
