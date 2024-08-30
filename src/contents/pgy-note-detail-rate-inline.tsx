@@ -1,5 +1,6 @@
 import type {PlasmoCSConfig, PlasmoGetInlineAnchor} from "plasmo"
-import {attachIndicatorsToElement} from "~src/libs/utils";
+import {assignIndicatorsValue, attachIndicatorsToElement, calculateIndicatorsRate} from "~src/libs/utils";
+import type {Indicator} from "~src/contents/pgy-note-list-rate-inline";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -9,10 +10,7 @@ export const getInlineAnchor: PlasmoGetInlineAnchor = () => {
   return document.querySelector('.note-data_title')
 }
 
-// Use this to optimize unmount lookups
 export const getShadowHostId = () => "pgy-note-detail-inline-unique-id"
-
-type Indicator = { name: string; value: number, rate?: { name: string, value: number, divideBy: string } };
 
 const PgyNoteDetailRateInline = () => {
   let indicators: Indicator[];
@@ -26,25 +24,8 @@ const PgyNoteDetailRateInline = () => {
     {name: "关注量", value: null, rate: {name: "关注率", value: null, divideBy: "阅读量"}},
   ];
   let allNodes = Array.from(document.querySelectorAll('.note-data_content .d-space-horizontal'));
-
-  indicators.map(indicator => {
-    let findNode = allNodes.find(n => {
-      return n.textContent.trim().includes(indicator.name)
-    });
-    if (findNode) {
-      indicator.value = parseInt(findNode.nextSibling.textContent.trim().replace(',', ''))
-    }
-    return indicator
-  });
-
-  indicators.map(indicator => {
-    if (indicator.rate && !indicator.rate.value) {
-      let divideBy = indicators.find(i => i.name === indicator.rate.divideBy).value;
-      indicator.rate.value = indicator.value / divideBy
-    }
-    return indicator
-  })
-
+  indicators = assignIndicatorsValue(indicators, allNodes);
+  indicators = calculateIndicatorsRate(indicators);
   attachIndicatorsToElement(indicators, allNodes);
 }
 
