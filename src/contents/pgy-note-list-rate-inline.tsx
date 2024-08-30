@@ -6,7 +6,7 @@ export const config: PlasmoCSConfig = {
 }
 
 export const getInlineAnchor: PlasmoGetInlineAnchor = () => {
-  return (document.querySelectorAll('.note-card-wrapper:last-child'))[0]
+  return document.querySelector('.note-card__mask')
 }
 
 export const getShadowHostId = () => "pgy-blogger-detail-inline-unique-id"
@@ -22,12 +22,12 @@ const PgyNoteListRateInline = () => {
       {name: "点赞", value: null, rate: {name: "点赞率", value: null, divideBy: "阅读"}},
       {name: "收藏", value: null, rate: {name: "收藏率", value: null, divideBy: "阅读"}},
     ];
+
     let elements = Array.from(el.querySelectorAll(".note-card__info .note-card__data .card-data__item .card-data__title"));
     indicators = assignIndicatorsValue(indicators, elements);
     indicators = calculateIndicatorsRate(indicators);
     attachIndicatorsToElement(indicators, elements);
   })
-  return (<span>hello</span>)
 }
 
 export default PgyNoteListRateInline
