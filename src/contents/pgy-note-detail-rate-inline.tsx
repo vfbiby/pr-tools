@@ -1,4 +1,5 @@
 import type {PlasmoCSConfig, PlasmoGetInlineAnchor} from "plasmo"
+import {attachIndicatorsToElement} from "~src/libs/utils";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -44,13 +45,7 @@ const PgyNoteDetailRateInline = () => {
     return indicator
   })
 
-  indicators.filter(i => i.rate).forEach(indicator => {
-    let indicatorLabel = allNodes.find(el => el.textContent.trim().includes(indicator.name));
-    indicatorLabel.textContent = `${indicatorLabel.textContent.trim()}/${indicator.rate.name}`
-    let indicatorValue = indicatorLabel.nextSibling;
-    indicatorValue.textContent = `${indicatorValue.textContent.trim()}/${(indicator.rate.value * 100).toFixed(1)}%`
-  })
-
+  attachIndicatorsToElement(indicators, allNodes);
 }
 
 export default PgyNoteDetailRateInline
