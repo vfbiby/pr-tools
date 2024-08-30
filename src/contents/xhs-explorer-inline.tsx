@@ -26,6 +26,8 @@ const XhsExplorerInline = () => {
       style={{
         borderRadius: 4,
         padding: 8,
+        boxShadow: '10px 5px 5px black',
+        // boxShadow: '2px 2px 2px 1px rgba(0, 0, 0, 0.2)',
         background: "pink"
       }}>
       <a href={`https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/${bloggerId}`} target="_blank">

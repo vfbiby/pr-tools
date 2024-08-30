@@ -15,7 +15,7 @@ export function assignIndicatorsValue(indicators: Indicator[], elements: Element
       return n.textContent.trim().includes(indicator.name)
     });
     if (findNode) {
-      indicator.value = parseInt(findNode.nextSibling.textContent.trim().replace(',', ''))
+      indicator.value = parseInt(findNode.nextSibling.textContent.trim().replaceAll(',', ''))
     }
     return {...indicator}
   });
