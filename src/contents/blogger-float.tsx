@@ -70,6 +70,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
 
   const onMessageListener = useCallback(
     async (e: any) => {
+      console.log('in onMessageListener')
       const type = e.detail.type
       if (type === "BLOGGER_INFO") {
         const response = JSON.parse(e.detail.responseText) as IBloggerInfoResponse;
@@ -98,7 +99,16 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     <Box sx={{height: "100%"}}>
       <div style={{height: "calc(100% - 0px)", width: "100%"}}>
         <Button>hello</Button>
-        <span>{bloggerInfo?.clickMidNum}</span>
+        {bloggerInfo && <>
+          <div>
+            <span>粉丝总数:</span><span>{bloggerInfo.fansCount}</span>
+          </div>
+          <div>
+            <span>{bloggerInfo?.userId}</span>
+          </div>
+          <div>{bloggerInfo?.name}</div>
+          <div>{bloggerInfo?.clickMidNum}</div>
+        </>}
       </div>
     </Box>
   </Drawer>;
