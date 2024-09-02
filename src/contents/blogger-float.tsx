@@ -1,12 +1,13 @@
 import type {PlasmoCSConfig} from "plasmo"
 import {Box, Button, Drawer} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
+import {useStorage} from "@plasmohq/storage/hook";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
 }
 
-type IBloggerInfo = {
+export type IBloggerInfo = {
   "userId": string;
   "valid": number;
   "headPhoto": string;
@@ -57,7 +58,7 @@ type IBloggerInfo = {
   "mEngagementNumMcn": number;
 }
 
-type IBloggerInfoResponse = {
+export type IBloggerInfoResponse = {
   "code": number;
   "msg": string;
   "guid": unknown;
@@ -65,17 +66,34 @@ type IBloggerInfoResponse = {
   data: IBloggerInfo;
 }
 
+export type IVisitBloggerInfo = {
+  bloggerId: string,
+  info: { bloggerInfo: Partial<IBloggerInfo> }
+};
+
 function BloggerPopup(props: { open: boolean, onClose: () => void }) {
   const [bloggerInfo, setBloggerInfo] = useState<IBloggerInfo>(null)
+  const onInit = (v: IVisitBloggerInfo[]) => {
+    console.log('vvvvvvv', v)
+    return v === undefined ? [] : v;
+  };
+  const [visitBlogger, setVisitBlogger] = useStorage<IVisitBloggerInfo[]>('visitBlogger', onInit);
+
+  const addBlogger = async () => {
+    visitBlogger.push({bloggerId: 'new-id', info: {bloggerInfo: {name: 'james'}}})
+    await setVisitBlogger(visitBlogger)
+  };
 
   const onMessageListener = useCallback(
     async (e: any) => {
-      console.log('in onMessageListener')
       const type = e.detail.type
       if (type === "BLOGGER_INFO") {
         const response = JSON.parse(e.detail.responseText) as IBloggerInfoResponse;
         if (response.code === 0) {
-          setBloggerInfo(response.data)
+          let data = response.data;
+          setBloggerInfo(data)
+          visitBlogger.push({bloggerId: data.userId, info: {bloggerInfo: data}});
+          await setVisitBlogger([...visitBlogger])
         } else
           console.log("blogger info getting error!")
       }
@@ -98,7 +116,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
   >
     <Box sx={{height: "100%"}}>
       <div style={{height: "calc(100% - 0px)", width: "100%"}}>
-        <Button>hello</Button>
+        <Button onClick={addBlogger}>hello</Button>
         {bloggerInfo && <>
           <div>
             <span>粉丝总数:</span><span>{bloggerInfo.fansCount}</span>
