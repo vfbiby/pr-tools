@@ -4,6 +4,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useStorage} from "@plasmohq/storage/hook";
 import {db} from "~src/libs/db";
 import {useLiveQuery} from "dexie-react-hooks";
+import {sendToBackground} from "@plasmohq/messaging";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -89,6 +90,16 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     }
   }, [visitBlogger, bloggerInfo]);
 
+  async function sendMessage(bloggerInfo) {
+    const resp = await sendToBackground({
+      name: "save-blogger-info",
+      body: {
+        blogger: bloggerInfo
+      }
+    })
+    console.log(resp.message)
+  }
+
   const onMessageListener = useCallback(
     async (e: any) => {
       const type = e.detail.type
@@ -96,11 +107,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
         const response = JSON.parse(e.detail.responseText) as IBloggerInfoResponse;
         if (response.code === 0) {
           let data = response.data;
-          try {
-            await db.bloggerInfo.add(data);
-          } catch (error) {
-            console.log(`Failed to add ${data.name}: ${error}`)
-          }
+          await sendMessage(response.data);
           setBloggerInfo(data)
         } else
           console.log("blogger info getting error!")
