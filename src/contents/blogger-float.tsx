@@ -2,6 +2,8 @@ import type {PlasmoCSConfig} from "plasmo"
 import {Box, Button, Drawer} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useStorage} from "@plasmohq/storage/hook";
+import {db} from "~src/libs/db";
+import {useLiveQuery} from "dexie-react-hooks";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -71,121 +73,10 @@ export type IVisitBloggerInfo = {
   info: { bloggerInfo: Partial<IBloggerInfo> }
 };
 
-function isIterable(input) {
-  if (input === null || input === undefined) {
-    return false
-  }
-
-  return typeof input[Symbol.iterator] === 'function'
-}
-
-window.onload = () => {
-
-  let db: IDBDatabase;
-
-  const DBOpenRequest = window.indexedDB.open('bloggerInfo', 1);
-  // Register two event handlers to act on the database being opened successfully, or not
-  DBOpenRequest.onerror = (event) => {
-    console.log('Error loading database.')
-  };
-
-  DBOpenRequest.onsuccess = (event) => {
-    console.log('Database initialised.');
-
-    // Store the result of opening the database in the db variable. This is used a lot below
-    db = DBOpenRequest.result;
-
-    // Run the displayData() function to populate the task list with all the to-do list data already in the IndexedDB
-    // displayData();
-
-  };
-
-  DBOpenRequest.onupgradeneeded = (event) => {
-    db = event.target.result;
-
-    db.onerror = (event) => {
-      console.log('Error loading database.');
-    };
-
-    // Create an objectStore for this database
-    const objectStore = db.createObjectStore('bloggerInfo', {keyPath: 'userId'});
-
-    console.log('Object store created.');
-  };
-
-  // function add() {
-  //   console.log("in add")
-  //   const objectRequestStore = db.transaction(['bloggerInfo'], 'readwrite')
-  //     .objectStore('bloggerInfo')
-  //     .add({userId: 1, name: '张三', age: 24, email: 'zhangsan@example.com'});
-  //
-  //   objectRequestStore.onsuccess = function (event) {
-  //     console.log('数据写入成功');
-  //   };
-  //
-  //   objectRequestStore.onerror = function (event) {
-  //     console.log('数据写入失败');
-  //   }
-  // }
-
-  // add();
-
-  function addData() {
-    console.log('in adData')
-    // Prevent default, as we don't want the form to submit in the conventional way
-
-    // Stop the form submitting if any values are left empty.
-    // This should never happen as there is the required attribute
-
-    // Grab the values entered into the form fields and store them in an object ready for being inserted into the IndexedDB
-    const newItem = [
-      {userId: 2342, name: 'james'},
-    ];
-    console.log(newItem)
-
-    // Open a read/write DB transaction, ready for adding the data
-    const transaction = db.transaction(['bloggerInfo'], 'readwrite');
-
-    // Report on the success of the transaction completing, when everything is done
-    transaction.oncomplete = () => {
-      console.log('Transaction completed: database modification finished.');
-
-      // Update the display of data to show the newly added item, by running displayData() again.
-      // displayData();
-    };
-
-    console.log("--------------------")
-    // Handler for any unexpected error
-    transaction.onerror = () => {
-      console.log(`Transaction not opened due to error: ${transaction.error}`);
-    };
-
-    // Call an object store that's already been added to the database
-    const objectStore = transaction.objectStore('bloggerInfo');
-    console.log(objectStore.indexNames);
-    console.log(objectStore.keyPath);
-    console.log(objectStore.name);
-    console.log(objectStore.transaction);
-    console.log(objectStore.autoIncrement);
-
-    // Make a request to add our newItem object to the object store
-    const objectStoreRequest = objectStore.add(newItem[0]);
-    objectStoreRequest.onsuccess = (event) => {
-
-      // Report the success of our request
-      // (to detect whether it has been succesfully
-      // added to the database, you'd look at transaction.oncomplete)
-      console.log('Request successful.');
-
-    };
-  }
-
-  addData()
-}
-
 function BloggerPopup(props: { open: boolean, onClose: () => void }) {
   const [bloggerInfo, setBloggerInfo] = useState<IBloggerInfo>(null)
   const [visitBlogger, setVisitBlogger] = useStorage<IVisitBloggerInfo[]>('visitBlogger');
+  const iBloggerInfos = useLiveQuery(() => db.bloggerInfo.toArray());
 
   const addBlogger = async () => {
     await setVisitBlogger([...visitBlogger, {bloggerId: 'new-id', info: {bloggerInfo: {name: 'james'}}}])
@@ -194,19 +85,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
   useEffect(() => {
     if (visitBlogger !== undefined && !bloggerInfo) {
       if (visitBlogger === null) {
-        setVisitBlogger([{
-          bloggerId: bloggerInfo.userId,
-          info: {bloggerInfo: {name: bloggerInfo.name}}
-        }])
-        return;
       }
-      const existBlogger = visitBlogger.find(blogger => blogger.bloggerId === bloggerInfo.userId);
-      if (existBlogger) return;
-      setVisitBlogger([...visitBlogger, {
-        bloggerId: bloggerInfo.userId,
-        info: {bloggerInfo: {name: bloggerInfo.name}}
-      }])
-
     }
   }, [visitBlogger, bloggerInfo]);
 
@@ -217,6 +96,11 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
         const response = JSON.parse(e.detail.responseText) as IBloggerInfoResponse;
         if (response.code === 0) {
           let data = response.data;
+          try {
+            await db.bloggerInfo.add(data);
+          } catch (error) {
+            console.log(`Failed to add ${data.name}: ${error}`)
+          }
           setBloggerInfo(data)
         } else
           console.log("blogger info getting error!")
@@ -230,10 +114,6 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     }
   }, [])
 
-  async function clearStorage() {
-    await setVisitBlogger(null)
-  }
-
   return <Drawer
     anchor="bottom"
     open={props.open}
@@ -245,17 +125,13 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     <Box sx={{height: "100%"}}>
       <div style={{height: "calc(100% - 0px)", width: "100%"}}>
         <Button onClick={addBlogger}>hello</Button>
-        <Button onClick={clearStorage}>delete</Button>
-        {bloggerInfo && <>
-          <div>
-            <span>粉丝总数:</span><span>{bloggerInfo.fansCount}</span>
-          </div>
-          <div>
-            <span>{bloggerInfo?.userId}</span>
-          </div>
-          <div>{bloggerInfo?.name}</div>
-          <div>{bloggerInfo?.clickMidNum}</div>
-        </>}
+        <ul>
+          {iBloggerInfos?.map((blogger) => (
+            <li key={blogger.userId}>
+              {blogger.name}, {blogger.fansCount}
+            </li>
+          ))}
+        </ul>
       </div>
     </Box>
   </Drawer>;
