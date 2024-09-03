@@ -4,9 +4,20 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {Button} from "@mui/material";
+import {sendToBackground} from "@plasmohq/messaging"
 
 function IndexPopup() {
   const [data, setData] = useState("")
+
+  async function sendMessage() {
+    const resp = await sendToBackground({
+      name: "ping",
+      body: {
+        id: 123
+      }
+    })
+    console.log(resp)
+  }
 
   return (
     <div
@@ -20,7 +31,7 @@ function IndexPopup() {
         </a>{" "}
         Extension!
       </h2>
-      <Button>hello</Button>
+      <Button onClick={() => sendMessage()}>send</Button>
       <input onChange={(e) => setData(e.target.value)} value={data}/>
       <a href="https://docs.plasmo.com" target="_blank">
         View Docs
