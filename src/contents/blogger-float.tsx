@@ -90,9 +90,9 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     }
   }, [visitBlogger, bloggerInfo]);
 
-  async function sendMessage(bloggerInfo) {
+  async function sendMessage(bloggerInfo: IBloggerInfo) {
     const resp = await sendToBackground({
-      name: "save-blogger-info",
+      name: "save/blogger-info",
       body: {
         blogger: bloggerInfo
       }

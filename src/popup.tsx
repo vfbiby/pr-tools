@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useCallback, useState} from "react"
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -12,14 +12,18 @@ function IndexPopup() {
   const [data, setData] = useState("")
   const iBloggerInfos = useLiveQuery(() => db.bloggerInfo.toArray());
 
-  async function sendMessage() {
+  const sendMessage = useCallback(async () => {
     const resp = await sendToBackground({
       name: "ping",
       body: {
-        id: 123
+        id: 9932
       }
     })
-    console.log(resp)
+    alert(resp.message)
+  }, []);
+
+  const clearBloggerInfo = () => {
+    db.bloggerInfo.clear();
   }
 
   return (
@@ -35,6 +39,7 @@ function IndexPopup() {
         Extension!
       </h2>
       <Button onClick={() => sendMessage()}>send</Button>
+      <Button onClick={() => clearBloggerInfo()}>clear</Button>
       <ul>
         {iBloggerInfos?.map((blogger) => (
           <li key={blogger.userId}>
