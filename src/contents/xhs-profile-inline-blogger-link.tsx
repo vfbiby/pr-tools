@@ -1,6 +1,6 @@
 import type {PlasmoCSConfig, PlasmoGetInlineAnchor} from "plasmo"
-import {useEffect, useState} from "react";
-import {extractBloggerId, PgyHomePage} from "~src/contents/xhs-explorer-inline-blogger-link";
+import {useEffect} from "react";
+import {extractBloggerId} from "~src/contents/xhs-explorer-inline-blogger-link";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.xiaohongshu.com/user/profile/*"]
