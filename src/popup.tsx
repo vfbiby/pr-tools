@@ -8,6 +8,26 @@ import {sendToBackground} from "@plasmohq/messaging"
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "~src/libs/db";
 
+async function getWps() {
+  let response = await fetch('https://www.kdocs.cn/api/v3/ide/file/ckyzatnqMqb3/script/V2-64ZKKzjHBFQwbudp0mhrtD/sync_task', {
+    method: 'POST',
+    credentials: 'same-origin',
+
+    headers: {
+      'AirScript-Token': '448evsptlyNBrC0ZhhJEca',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      'Context': {
+        'argv': {}
+      }
+    })
+  });
+  console.log(response)
+  return response;
+}
+
 function IndexPopup() {
   const [data, setData] = useState("")
   const iBloggerInfos = useLiveQuery(() => db.bloggerInfo.toArray());
@@ -38,6 +58,7 @@ function IndexPopup() {
         </a>{" "}
         Extension!
       </h2>
+      <Button onClick={() => getWps()}>wps</Button>
       <Button onClick={() => sendMessage()}>send</Button>
       <Button onClick={() => clearBloggerInfo()}>clear</Button>
       <ul>
