@@ -2,113 +2,81 @@ export {}
 
 console.log(new Date().getSeconds())
 
+const POST = chrome.declarativeNetRequest.RequestMethod.POST;
+const MODIFY_HEADERS = chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS;
+const SET = chrome.declarativeNetRequest.HeaderOperation.SET;
+const OPTIONS = chrome.declarativeNetRequest.RequestMethod.OPTIONS;
+const XMLHTTPREQUEST = chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST;
+
+let APPEND = chrome.declarativeNetRequest.HeaderOperation.APPEND;
 const testRules = [
   {
     id: 1,
     priority: 11,
     action: {
-      "type": "modifyHeaders",
+      "type": MODIFY_HEADERS,
       "requestHeaders": [
-        // {
-        //   "operation": "set",
-        //   "header": "Access-Control-Allow-Credentials",
-        //   "value": "false"
-        // },
         {
-          "operation": "set",
+          "operation": SET,
           "header": "Access-Control-Allow-Origin",
           "value": "*"
         },
-        // {
-        //   "operation": "set",
-        //   "header": "Origin",
-        //   // "value": "http://www.xiaohongshu.com"
-        //   "value": "http://www.kdocs.cns"
-        // },
       ]
     },
     condition: {
       urlFilter: "||www.kdocs.cn",
-      requestMethods: ['post'],
-      resourceTypes: ["xmlhttprequest"]
+      requestMethods: [POST],
+      resourceTypes: [XMLHTTPREQUEST]
     }
   },
-  // {
-  //   id: 2,
-  //   priority: 6,
-  //   "action": {
-  //     "type": "modifyHeaders",
-  //     "responseHeaders": [
-  //       {
-  //         "operation": "remove",
-  //         "header": "Access-Control-Allow-Headers",
-  //       },
-  //       {
-  //         "operation": "remove",
-  //         "header": "Access-Control-Expose-Headers",
-  //       },
-  //     ]
-  //   },
-  //   condition: {
-  //     urlFilter: "||www.kdocs.cn",
-  //     requestMethods: ['options'],
-  //     resourceTypes: ["xmlhttprequest"]
-  //   }
-  // },
   {
     id: 3,
     priority: 3,
     "action": {
-      "type": "modifyHeaders",
+      "type": MODIFY_HEADERS,
       "responseHeaders": [
-        // {
-        //   "operation": "set",
-        //   "header": "Access-Control-Allow-Credentials",
-        //   "value": "true"
-        // },
         {
-          "operation": "set",
+          "operation": SET,
           "header": "Access-Control-Allow-Origin",
-          // "value": "https://www.xiaohongshu.com"
-          "value": "*"
+          "value": "https://www.xiaohongshu.com"
         },
-        // {
-        //   "operation": "append",
-        //   "header": "Access-Control-Allow-Headers",
-        //   "value": "airscript-token,content-type"
-        // }
       ],
       "requestHeaders": [
         {
-          "operation": "set",
+          "operation": SET,
           "header": "Origin",
-          "value": "http://www.kdocs.cn"
+          "value": "https://www.kdocs.cn"
         },
       ]
     },
     condition: {
       urlFilter: "||www.kdocs.cn",
-      requestMethods: ['options'],
-      resourceTypes: ["xmlhttprequest"]
+      requestMethods: [OPTIONS],
+      resourceTypes: [XMLHTTPREQUEST]
     }
   },
   {
     id: 4,
     priority: 9,
     "action": {
-      "type": "modifyHeaders",
+      "type": MODIFY_HEADERS,
       "responseHeaders": [
         {
-          "operation": "set",
+          "operation": APPEND,
           "header": "Access-Control-Allow-Headers",
-          "value": "airscript-token, content-type"
+          "value": "airscript-token,content-type"
+        },
+        {
+          "operation": SET,
+          "header": "Access-Control-Allow-Methods",
+          "value": "*"
         }
       ]
     },
     condition: {
       urlFilter: "||www.kdocs.cn",
-      requestMethods: ['options'],
-      resourceTypes: ["xmlhttprequest"]
+      requestMethods: [OPTIONS],
+      resourceTypes: [XMLHTTPREQUEST]
     }
   }
 ];
