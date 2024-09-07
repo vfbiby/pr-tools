@@ -18,6 +18,13 @@ const testRules = [
       "requestHeaders": [
         {
           "operation": SET,
+          "header": "Origin",
+          "value": "https://www.kdocs.cn"
+        },
+      ],
+      responseHeaders: [
+        {
+          "operation": SET,
           "header": "Access-Control-Allow-Origin",
           "value": "*"
         },
