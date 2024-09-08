@@ -2,25 +2,20 @@ import type {PlasmoCSConfig, PlasmoGetInlineAnchor, PlasmoGetStyle} from "plasmo
 import {type Dispatch, type SetStateAction, useEffect, useState} from "react";
 import {extractBloggerId} from "~src/contents/xhs-explorer-inline-blogger-link";
 import {type BloggerTable, createRecordsTo} from "~src/libs/wps";
-import createCache from "@emotion/cache";
-import {CacheProvider} from "@emotion/react";
-import {LoadingButton} from "@mui/lab";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import {pink} from "@mui/material/colors";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.xiaohongshu.com/user/profile/*"]
 }
 
-const styleElement = document.createElement("style")
-
-const styleCache = createCache({
-  key: "plasmo-mui-cache",
-  prepend: false,
-  container: styleElement
-})
-
-export const getStyle = () => styleElement
+export const getStyle: PlasmoGetStyle = () => {
+  const style = document.createElement("style")
+  style.textContent = `
+    button:hover {
+      background-color: pink;
+    }
+  `
+  return style
+}
 
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () => ({
   element: document.querySelector('.user-nickname .user-name'),
@@ -55,12 +50,10 @@ const XhsExplorerInlineBloggerCollection = () => {
   }, [window.location.href])
 
   return <>
-    <CacheProvider value={styleCache}>
-      <LoadingButton sx={{borderRadius: 10}} loading={loading}
-                     onClick={() => addBloggerToWps(blogger, setLoading)}>
-        <AddCircleIcon fontSize="large" sx={{color: pink[200]}}/>
-      </LoadingButton>
-    </CacheProvider>
+    <button onClick={() => addBloggerToWps(blogger, setLoading)}
+            style={{padding: "10px 15px", borderRadius: 30, border: 0, margin: "0 5px"}}>
+      {loading ? "..." : "+"}
+    </button>
   </>
 }
 
