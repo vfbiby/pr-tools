@@ -1,8 +1,7 @@
 import type {PlasmoCSConfig, PlasmoGetInlineAnchor, PlasmoGetStyle} from "plasmo"
-import {type Dispatch, useEffect, useState} from "react";
+import {type Dispatch, type SetStateAction, useEffect, useState} from "react";
 import {extractBloggerId} from "~src/contents/xhs-explorer-inline-blogger-link";
 import {type BloggerTable, createRecordsTo} from "~src/libs/wps";
-import type {Statement} from "@babel/types";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.xiaohongshu.com/user/profile/*"]
@@ -29,7 +28,7 @@ function getInteractions() {
   return Array.from(document.querySelectorAll('.info .data-info .user-interactions .count')).map(node => node.textContent);
 }
 
-async function addBloggerToWps(blogger: BloggerTable, setLoading: Dispatch<Statement<boolean>>) {
+async function addBloggerToWps(blogger: BloggerTable, setLoading: Dispatch<SetStateAction<boolean>>) {
   setLoading(true)
   await createRecordsTo<BloggerTable>('达人登记', [{fields: blogger}]);
   setLoading(false)
