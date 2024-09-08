@@ -22,7 +22,7 @@ export function SaveBloggerButton(props: {
   const handleSaveBlogger = async () => {
     const extraInfo = {"合作建议": selectedValue, "备注": "尽快联系询价"}
     const response = await addBloggerToWps({...props.bloggerInfo, ...extraInfo})
-    setRespMessage(response.error)
+    response.error ? setRespMessage(response.error) : setRespMessage("博主保存成功！")
     setMessageOpen(true)
   };
 
