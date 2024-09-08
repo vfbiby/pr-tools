@@ -1,10 +1,11 @@
 import type {PlasmoCSConfig} from "plasmo"
 import {Box, Button, Drawer} from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
+import {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import {useStorage} from "@plasmohq/storage/hook";
 import {db} from "~src/libs/db";
 import {useLiveQuery} from "dexie-react-hooks";
 import {sendToBackground} from "@plasmohq/messaging";
+import {DataGrid, type GridColDef} from "@mui/x-data-grid";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -74,14 +75,44 @@ export type IVisitBloggerInfo = {
   info: { bloggerInfo: Partial<IBloggerInfo> }
 };
 
+function getBloggerInfo(setRemoteBloggerInfo: Dispatch<SetStateAction<IBloggerInfo[]>>) {
+  const promise: Promise<{ data: IBloggerInfo[] }> = sendToBackground({
+    name: "read/blogger-info"
+  });
+  promise.then(dbData => {
+    setRemoteBloggerInfo(dbData.data)
+  })
+}
+
 function BloggerPopup(props: { open: boolean, onClose: () => void }) {
   const [bloggerInfo, setBloggerInfo] = useState<IBloggerInfo>(null)
   const [visitBlogger, setVisitBlogger] = useStorage<IVisitBloggerInfo[]>('visitBlogger');
   const iBloggerInfos = useLiveQuery(() => db.bloggerInfo.toArray());
+  const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>()
+
+  const columns: GridColDef<IBloggerInfo>[] = [
+    {field: 'userId', headerName: 'ID', width: 90},
+    {
+      field: 'name',
+      headerName: '用户名',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'fansCount',
+      headerName: '粉丝数',
+      width: 80,
+      editable: true,
+    }
+  ];
 
   const addBlogger = async () => {
     await setVisitBlogger([...visitBlogger, {bloggerId: 'new-id', info: {bloggerInfo: {name: 'james'}}}])
   };
+
+  useEffect(() => {
+    getBloggerInfo(setRemoteBloggerInfo);
+  }, []);
 
   useEffect(() => {
     if (visitBlogger !== undefined && !bloggerInfo) {
@@ -130,16 +161,21 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     }}
   >
     <Box sx={{height: "100%"}}>
-      <div style={{height: "calc(100% - 0px)", width: "100%"}}>
-        <Button onClick={addBlogger}>hello</Button>
-        <ul>
-          {iBloggerInfos?.map((blogger) => (
-            <li key={blogger.userId}>
-              {blogger.name}, {blogger.fansCount}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <DataGrid
+        getRowId={row => row.userId}
+        rows={remoteBloggerInfo}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 10,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 20, 50]}
+        checkboxSelection
+        disableRowSelectionOnClick
+      />
     </Box>
   </Drawer>;
 }
