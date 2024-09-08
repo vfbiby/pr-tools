@@ -23,7 +23,7 @@ export type DWBResponseRecords<T> = {
 }[];
 
 export async function createRecordsTo<T>(shtName: string, recordsToBeCreate: DWBRCreateRecords<T>) {
-  let saveResponse = await fetch(createUrl, {
+  const saveResponse = await fetch(createUrl, {
     method: 'POST',
     headers: {
       'AirScript-Token': token,
@@ -38,7 +38,6 @@ export async function createRecordsTo<T>(shtName: string, recordsToBeCreate: DWB
       }
     })
   });
-  console.log(saveResponse)
   return await saveResponse.json() as WpsResponse<DWBResponseRecords<T>>;
 }
 
