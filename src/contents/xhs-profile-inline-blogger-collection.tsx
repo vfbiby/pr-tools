@@ -5,6 +5,8 @@ import {type BloggerTable, createRecordsTo} from "~src/libs/wps";
 import createCache from "@emotion/cache";
 import {CacheProvider} from "@emotion/react";
 import {LoadingButton} from "@mui/lab";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import {pink} from "@mui/material/colors";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.xiaohongshu.com/user/profile/*"]
@@ -54,8 +56,10 @@ const XhsExplorerInlineBloggerCollection = () => {
 
   return <>
     <CacheProvider value={styleCache}>
-      <LoadingButton sx={{mr: 1, borderRadius: 10}} variant="outlined" loading={loading}
-                     onClick={() => addBloggerToWps(blogger, setLoading)}>save</LoadingButton>
+      <LoadingButton sx={{borderRadius: 10}} loading={loading}
+                     onClick={() => addBloggerToWps(blogger, setLoading)}>
+        <AddCircleIcon fontSize="large" sx={{color: pink[200]}}/>
+      </LoadingButton>
     </CacheProvider>
   </>
 }
