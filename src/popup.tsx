@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react"
+import {type Dispatch, type SetStateAction, useCallback, useState} from "react"
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -7,6 +7,7 @@ import {Button} from "@mui/material";
 import {sendToBackground} from "@plasmohq/messaging"
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "~src/libs/db";
+import {LoadingButton} from "@mui/lab";
 
 async function getWps() {
   let response = await fetch('https://www.kdocs.cn/api/v3/ide/file/ckyzatnqMqb3/script/V2-64ZKKzjHBFQwbudp0mhrtD/sync_task', {
@@ -26,6 +27,18 @@ async function getWps() {
   });
   console.log(response)
   return response;
+}
+
+const saveToRemote = (setLoading: Dispatch<SetStateAction<boolean>>) => {
+  setLoading(true)
+  setTimeout(() => {
+    setLoading(false)
+  }, 2000)
+}
+
+function SaveSomeThing() {
+  const [loading, setLoading] = useState<boolean>(false)
+  return <LoadingButton loading={loading} onClick={() => saveToRemote(setLoading)}>hello</LoadingButton>;
 }
 
 function IndexPopup() {
@@ -58,6 +71,7 @@ function IndexPopup() {
         </a>{" "}
         Extension!
       </h2>
+      <SaveSomeThing/>
       <Button onClick={() => getWps()}>wps</Button>
       <Button onClick={() => sendMessage()}>send</Button>
       <Button onClick={() => clearBloggerInfo()}>clear</Button>
