@@ -2,6 +2,8 @@ import type {PlasmoCSConfig, PlasmoGetInlineAnchor, PlasmoGetStyle} from "plasmo
 import {type Dispatch, type SetStateAction, useEffect, useState} from "react";
 import {extractBloggerId} from "~src/contents/xhs-explorer-inline-blogger-link";
 import {type BloggerTable, createRecordsTo} from "~src/libs/wps";
+import {SaveBloggerButton} from "~src/components/save-blogger-button";
+import SimpleDialogDemo from "~src/components/SimpleDialog";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.xiaohongshu.com/user/profile/*"]
@@ -50,10 +52,7 @@ const XhsExplorerInlineBloggerCollection = () => {
   }, [window.location.href])
 
   return <>
-    <button onClick={() => addBloggerToWps(blogger, setLoading)}
-            style={{padding: "10px 15px", borderRadius: 30, border: 0, margin: "0 5px"}}>
-      {loading ? "..." : "+"}
-    </button>
+    <SaveBloggerButton onClick={() => addBloggerToWps(blogger, setLoading)} loading={loading}/>
   </>
 }
 
