@@ -10,16 +10,6 @@ export const config: PlasmoCSConfig = {
   matches: ["https://www.xiaohongshu.com/user/profile/*"]
 }
 
-// export const getStyle: PlasmoGetStyle = () => {
-//   const style = document.createElement("style")
-//   style.textContent = `
-//     button:hover {
-//       background-color: pink;
-//     }
-//   `
-//   return style
-// }
-
 const styleElement = document.createElement("style")
 
 const styleCache = createCache({
