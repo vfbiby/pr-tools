@@ -1,31 +1,51 @@
-import {SimpleDialog} from "~src/components/SimpleDialog";
+import {cooperation, SimpleDialog} from "~src/components/SimpleDialog";
 import * as React from "react";
+import type {BloggerTable} from "~src/libs/wps";
+import {addBloggerToWps} from "~src/contents/xhs-profile-inline-blogger-collection";
+import {useState} from "react";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-
-export function SaveBloggerButton(props: { onClick: () => Promise<void>, loading: boolean }) {
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+export function SaveBloggerButton(props: {
+  bloggerInfo: BloggerTable,
+}) {
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [respMessage, setRespMessage] = useState<string>()
+  const [selectedValue, setSelectedValue] = React.useState<string>(cooperation[0]);
+  const [loading, setLoading] = useState<boolean>(false)
+  const [messageOpen, setMessageOpen] = useState(false)
 
   const handleClickOpen = async () => {
-    setOpen(true);
-    // await props.onClick()
+    setDialogOpen(true)
   };
 
-  const handleClose = (value: string) => {
-    setOpen(false);
+  const handleSaveBlogger = async () => {
+    const extraInfo = {"合作建议": selectedValue, "备注": "尽快联系询价"}
+    const response = await addBloggerToWps({...props.bloggerInfo, ...extraInfo})
+    setRespMessage(response.error)
+    setMessageOpen(true)
+  };
+
+  const handleClose = async (value: string) => {
     setSelectedValue(value);
+    setDialogOpen(false)
+    setLoading(true)
+    await handleSaveBlogger()
   };
 
   return <div>
-    <button onClick={props.onClick}
+    <button onClick={handleClickOpen}
             style={{padding: "10px 15px", borderRadius: 30, border: 0, margin: "0 5px"}}>
-      {props.loading ? "..." : '+'}
+      {loading ? "..." : '+'}
     </button>
     <SimpleDialog
       selectedValue={selectedValue}
-      open={open}
+      open={dialogOpen}
       onClose={handleClose}
     />
+
+    <Dialog onClose={() => setMessageOpen(false)} open={messageOpen}>
+      <DialogTitle>{respMessage}</DialogTitle>
+    </Dialog>
   </div>;
 }

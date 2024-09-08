@@ -12,6 +12,8 @@ export type BloggerTable = {
   博主ID: string;
   首页链接: string;
   蒲首页: string;
+  // 合作建议?: string;
+  // 备注?: string;
 }
 
 export type DWBRCreateRecords<T> = {

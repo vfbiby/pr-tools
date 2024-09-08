@@ -13,7 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
 import {blue} from '@mui/material/colors';
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
+export const cooperation = ['PR联系询价', '品牌主理人'];
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -36,15 +36,15 @@ export function SimpleDialog(props: SimpleDialogProps) {
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Set backup account</DialogTitle>
       <List sx={{pt: 0}}>
-        {emails.map((email) => (
-          <ListItem disableGutters key={email}>
-            <ListItemButton onClick={() => handleListItemClick(email)}>
+        {cooperation.map((coop) => (
+          <ListItem disableGutters key={coop}>
+            <ListItemButton onClick={() => handleListItemClick(coop)}>
               <ListItemAvatar>
                 <Avatar sx={{bgcolor: blue[100], color: blue[600]}}>
                   <PersonIcon/>
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={email}/>
+              <ListItemText primary={coop}/>
             </ListItemButton>
           </ListItem>
         ))}
@@ -68,7 +68,7 @@ export function SimpleDialog(props: SimpleDialogProps) {
 
 export default function SimpleDialogDemo() {
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  const [selectedValue, setSelectedValue] = React.useState(cooperation[1]);
 
   const handleClickOpen = () => {
     setOpen(true);

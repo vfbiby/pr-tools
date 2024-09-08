@@ -30,15 +30,12 @@ function getInteractions() {
   return Array.from(document.querySelectorAll('.info .data-info .user-interactions .count')).map(node => node.textContent);
 }
 
-async function addBloggerToWps(blogger: BloggerTable, setLoading: Dispatch<SetStateAction<boolean>>) {
-  setLoading(true)
-  await createRecordsTo<BloggerTable>('达人登记', [{fields: blogger}]);
-  setLoading(false)
+export async function addBloggerToWps(blogger: BloggerTable) {
+  return await createRecordsTo<BloggerTable>('达人登记', [{fields: blogger}]);
 }
 
 const XhsExplorerInlineBloggerCollection = () => {
   const [blogger, setBlogger] = useState<BloggerTable>()
-  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const id = extractBloggerId(window.location.href);
@@ -52,7 +49,7 @@ const XhsExplorerInlineBloggerCollection = () => {
   }, [window.location.href])
 
   return <>
-    <SaveBloggerButton onClick={() => addBloggerToWps(blogger, setLoading)} loading={loading}/>
+    <SaveBloggerButton bloggerInfo={blogger}/>
   </>
 }
 
