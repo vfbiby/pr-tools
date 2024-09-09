@@ -103,7 +103,115 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
       headerName: '粉丝数',
       width: 80,
       editable: true,
-    }
+    },
+    {
+      field: 'likeCollectCountInfo',
+      headerName: '获赞与藏',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'redId',
+      headerName: '红书号',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'location',
+      headerName: '地区',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'headPhoto',
+      headerName: '头像',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'businessNoteCount',
+      headerName: '商业笔记数',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'picturePrice',
+      headerName: '图文报价',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'videoPrice',
+      headerName: '视频报价',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'userType',
+      headerName: '用户类型',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'pictureState',
+      headerName: '图片合作',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'videoState',
+      headerName: '视频合作',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'cooperateState',
+      headerName: '合作状态',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'featureTags',
+      headerName: '博主标签',
+      width: 250,
+      editable: true,
+    },
+    {
+      field: 'currentLevel',
+      headerName: '层级',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'gender',
+      headerName: '性别',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'tradeType',
+      headerName: '交易类型',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'clickMidNum',
+      headerName: '点击中位数',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'interMidNum',
+      headerName: 'inter中位数',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'mEngagementNum',
+      headerName: '互动中位数',
+      width: 80,
+      editable: true,
+    },
   ];
 
   const addBlogger = async () => {
