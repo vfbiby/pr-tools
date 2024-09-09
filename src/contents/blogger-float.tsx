@@ -3,11 +3,15 @@ import {Box, Drawer} from "@mui/material";
 import {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import {useStorage} from "@plasmohq/storage/hook";
 import {sendToBackground} from "@plasmohq/messaging";
-// import {type GridColDef, type GridRenderCellParams, GridToolbar} from "@mui/x-data-grid";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Avatar from "@mui/material/Avatar";
 import type {IBloggerInfo, IBloggerInfoResponse, IVisitBloggerInfo} from "~src/libs/BloggerInfo";
-import {DataGridPremium, type GridColDef, type GridRenderCellParams, GridToolbar} from "@mui/x-data-grid-premium";
+import {
+  DataGridPremium,
+  type GridColDef,
+  type GridRenderCellParams,
+  GridToolbar
+} from "@mui/x-data-grid-premium";
 import {LicenseInfo} from "@mui/x-license-pro";
 
 export const config: PlasmoCSConfig = {
@@ -146,7 +150,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     },
     {
       field: 'clickMidNum',
-      headerName: '点击中位数',
+      headerName: '阅读中位数',
       width: 100,
       editable: true,
     },
@@ -223,17 +227,17 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     <Box sx={{height: "100%"}}>
       <DataGridPremium
         slots={{toolbar: GridToolbar}}
+        slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
         getRowId={row => row.userId}
         rows={remoteBloggerInfo}
-        columns={columns}
         initialState={{
           pagination: {
-            paginationModel: {
-              pageSize: 20,
-            },
-          },
+            paginationModel: {pageSize: 20}
+          }
         }}
-        pageSizeOptions={[5, 10, 20, 50]}
+        columns={columns}
+        pagination={true}
+        pageSizeOptions={[5, 10, 20, 50, 100, {value: 1000, label: '1千'}]}
         checkboxSelection
         disableRowSelectionOnClick
       />
@@ -243,6 +247,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
 
 const BloggerFloat = () => {
   LicenseInfo.setLicenseKey('e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y');
+
   const [openPopup, setOpenPopup] = useState(false)
   return (
     <div style={{margin: "200px 0 0 10px"}}>
