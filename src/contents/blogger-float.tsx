@@ -1,11 +1,11 @@
 import type {PlasmoCSConfig} from "plasmo"
-import {Box, Button, Drawer} from "@mui/material";
+import {Box, Drawer} from "@mui/material";
 import {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import {useStorage} from "@plasmohq/storage/hook";
-import {db} from "~src/libs/db";
-import {useLiveQuery} from "dexie-react-hooks";
 import {sendToBackground} from "@plasmohq/messaging";
-import {DataGrid, type GridColDef} from "@mui/x-data-grid";
+import {DataGrid, type GridColDef, type GridRenderCellParams, GridToolbar} from "@mui/x-data-grid";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Avatar from "@mui/material/Avatar";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -87,11 +87,19 @@ function getBloggerInfo(setRemoteBloggerInfo: Dispatch<SetStateAction<IBloggerIn
 function BloggerPopup(props: { open: boolean, onClose: () => void }) {
   const [bloggerInfo, setBloggerInfo] = useState<IBloggerInfo>(null)
   const [visitBlogger, setVisitBlogger] = useStorage<IVisitBloggerInfo[]>('visitBlogger');
-  const iBloggerInfos = useLiveQuery(() => db.bloggerInfo.toArray());
   const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>()
 
   const columns: GridColDef<IBloggerInfo>[] = [
-    {field: 'userId', headerName: 'ID', width: 90},
+    {
+      field: 'userId', headerName: 'ID', width: 90,
+      renderCell: (params: GridRenderCellParams<any, string>) => {
+        if (!params.value) return '';
+        return <a target="_blank"
+                  href={`https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/${params.value.trim()}`}>
+          {params.value.trim()}
+        </a>
+      }
+    },
     {
       field: 'name',
       headerName: '用户名',
@@ -119,14 +127,35 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     {
       field: 'location',
       headerName: '地区',
+      width: 100,
+      editable: true,
+      renderCell: (params: GridRenderCellParams<any, string>) => {
+        if (!params.value) return '';
+        return <Box><LocationOnIcon fontSize="small"/>{params.value.trim()}</Box>
+      }
+    },
+    {
+      field: 'noteSign',
+      headerName: '签约',
       width: 80,
       editable: true,
+      renderCell: (params: GridRenderCellParams<any, { name: string, userId: string }>) => {
+        if (!params.value) return '';
+        return <a target="_blank"
+                  href={`https://pgy.xiaohongshu.com/solar/pre-trade/view/mcn-detail/${params.value.userId}`}>
+          {params.value.name}
+        </a>
+      }
     },
     {
       field: 'headPhoto',
       headerName: '头像',
       width: 80,
       editable: true,
+      renderCell: (params: GridRenderCellParams<any, string>) => {
+        if (!params.value) return '';
+        return <Avatar src={`${params.value.trim()}`} alt="blogger header photo"/>
+      }
     },
     {
       field: 'businessNoteCount',
@@ -147,8 +176,44 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
       editable: true,
     },
     {
-      field: 'userType',
-      headerName: '用户类型',
+      field: 'cooperateState',
+      headerName: '合作状态',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'featureTags',
+      headerName: '博主标签',
+      width: 250,
+      editable: true,
+    },
+    {
+      field: 'currentLevel',
+      headerName: '账号状态',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'gender',
+      headerName: '性别',
+      width: 80,
+      editable: true,
+    },
+    {
+      field: 'personalTags',
+      headerName: '个人标签',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'clickMidNum',
+      headerName: '点击中位数',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'mEngagementNum',
+      headerName: '互动中位数',
       width: 80,
       editable: true,
     },
@@ -164,59 +229,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
       width: 80,
       editable: true,
     },
-    {
-      field: 'cooperateState',
-      headerName: '合作状态',
-      width: 80,
-      editable: true,
-    },
-    {
-      field: 'featureTags',
-      headerName: '博主标签',
-      width: 250,
-      editable: true,
-    },
-    {
-      field: 'currentLevel',
-      headerName: '层级',
-      width: 80,
-      editable: true,
-    },
-    {
-      field: 'gender',
-      headerName: '性别',
-      width: 80,
-      editable: true,
-    },
-    {
-      field: 'tradeType',
-      headerName: '交易类型',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'clickMidNum',
-      headerName: '点击中位数',
-      width: 100,
-      editable: true,
-    },
-    {
-      field: 'interMidNum',
-      headerName: 'inter中位数',
-      width: 100,
-      editable: true,
-    },
-    {
-      field: 'mEngagementNum',
-      headerName: '互动中位数',
-      width: 80,
-      editable: true,
-    },
   ];
-
-  const addBlogger = async () => {
-    await setVisitBlogger([...visitBlogger, {bloggerId: 'new-id', info: {bloggerInfo: {name: 'james'}}}])
-  };
 
   useEffect(() => {
     getBloggerInfo(setRemoteBloggerInfo);
@@ -265,18 +278,19 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     open={props.open}
     onClose={props.onClose}
     PaperProps={{
-      sx: {width: "100%", height: "60%"}
+      sx: {width: "100%", height: "70%"}
     }}
   >
     <Box sx={{height: "100%"}}>
       <DataGrid
+        slots={{toolbar: GridToolbar}}
         getRowId={row => row.userId}
         rows={remoteBloggerInfo}
         columns={columns}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 10,
+              pageSize: 20,
             },
           },
         }}
