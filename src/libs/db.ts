@@ -1,5 +1,6 @@
 import Dexie, {type EntityTable} from "dexie";
-import type {IBloggerInfo} from "~src/contents/blogger-float";
+
+import type {IBloggerInfo} from "~src/libs/BloggerInfo";
 
 const db = new Dexie('BloggerDB') as Dexie & {
   bloggerInfo: EntityTable<IBloggerInfo, "userId">
