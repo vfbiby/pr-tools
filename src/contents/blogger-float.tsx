@@ -1,17 +1,11 @@
 import type {PlasmoCSConfig} from "plasmo"
 import {Box, Drawer} from "@mui/material";
 import {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
-import {useStorage} from "@plasmohq/storage/hook";
 import {sendToBackground} from "@plasmohq/messaging";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Avatar from "@mui/material/Avatar";
-import type {IBloggerInfo, IBloggerInfoResponse, IVisitBloggerInfo} from "~src/libs/BloggerInfo";
-import {
-  DataGridPremium,
-  type GridColDef,
-  type GridRenderCellParams,
-  GridToolbar
-} from "@mui/x-data-grid-premium";
+import type {IBloggerInfo, IBloggerInfoResponse} from "~src/libs/BloggerInfo";
+import {DataGridPremium, type GridColDef, type GridRenderCellParams, GridToolbar} from "@mui/x-data-grid-premium";
 import {LicenseInfo} from "@mui/x-license-pro";
 
 export const config: PlasmoCSConfig = {
@@ -19,17 +13,14 @@ export const config: PlasmoCSConfig = {
 }
 
 function getBloggerInfo(setRemoteBloggerInfo: Dispatch<SetStateAction<IBloggerInfo[]>>) {
-  const promise: Promise<{ data: IBloggerInfo[] }> = sendToBackground({
+  sendToBackground({
     name: "read/blogger-info"
-  });
-  promise.then(dbData => {
-    setRemoteBloggerInfo(dbData.data)
+  }).then(response => {
+    setRemoteBloggerInfo(response.data)
   })
 }
 
 function BloggerPopup(props: { open: boolean, onClose: () => void }) {
-  const [bloggerInfo, setBloggerInfo] = useState<IBloggerInfo>(null)
-  const [visitBlogger, setVisitBlogger] = useStorage<IVisitBloggerInfo[]>('visitBlogger');
   const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>()
 
   const columns: GridColDef<IBloggerInfo>[] = [
@@ -178,13 +169,6 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     getBloggerInfo(setRemoteBloggerInfo);
   }, []);
 
-  useEffect(() => {
-    if (visitBlogger !== undefined && !bloggerInfo) {
-      if (visitBlogger === null) {
-      }
-    }
-  }, [visitBlogger, bloggerInfo]);
-
   async function sendMessage(bloggerInfo: IBloggerInfo) {
     const resp = await sendToBackground({
       name: "save/blogger-info",
@@ -204,7 +188,6 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
         if (response.code === 0) {
           let data = response.data;
           await sendMessage(response.data);
-          setBloggerInfo(data)
         } else
           console.log("blogger info getting error!")
       }
