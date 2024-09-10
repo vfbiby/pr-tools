@@ -6,8 +6,12 @@ const db = new Dexie('BloggerDB') as Dexie & {
   bloggerInfo: EntityTable<IBloggerInfo, "userId">
 };
 
-db.version(1).stores({
+db.version(2).stores({
   bloggerInfo: '++userId, name, gender, fansCount, likeCollectCountInfo, featureTags'
+}).upgrade(tx => {
+  return tx.table('bloggerInfo').toCollection().modify(blogger => {
+    blogger.createdAt = new Date()
+  })
 })
 
 export {db}

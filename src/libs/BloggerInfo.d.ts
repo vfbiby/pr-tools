@@ -1,4 +1,5 @@
 export type IBloggerInfo = {
+  createdAt: Date;
   "userId": string;
   "valid": number;
   "headPhoto": string;

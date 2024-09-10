@@ -7,6 +7,7 @@ import Avatar from "@mui/material/Avatar";
 import type {IBloggerInfo, IBloggerInfoResponse} from "~src/libs/BloggerInfo";
 import {DataGridPremium, type GridColDef, type GridRenderCellParams, GridToolbar} from "@mui/x-data-grid-premium";
 import {LicenseInfo} from "@mui/x-license-pro";
+import ApartmentIcon from '@mui/icons-material/Apartment';
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -53,8 +54,14 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
       editable: true,
     },
     {
-      field: 'redId',
-      headerName: '红书号',
+      field: 'clickMidNum',
+      headerName: '阅读中位数',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'mEngagementNum',
+      headerName: '互动中位数',
       width: 80,
       editable: true,
     },
@@ -70,15 +77,17 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     },
     {
       field: 'noteSign',
-      headerName: '签约',
-      width: 80,
+      headerName: '机构',
+      width: 90,
       editable: true,
       renderCell: (params: GridRenderCellParams<any, { name: string, userId: string }>) => {
         if (!params.value) return '';
-        return <a target="_blank"
-                  href={`https://pgy.xiaohongshu.com/solar/pre-trade/view/mcn-detail/${params.value.userId}`}>
-          {params.value.name}
-        </a>
+        return <Box>
+          <ApartmentIcon fontSize="small" sx={{mr: 0.5}}/>
+          <a target="_blank"
+             href={`https://pgy.xiaohongshu.com/solar/pre-trade/view/mcn-detail/${params.value.userId}`}>
+            {params.value.name}
+          </a></Box>
       }
     },
     {
@@ -140,15 +149,18 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
       editable: true,
     },
     {
-      field: 'clickMidNum',
-      headerName: '阅读中位数',
-      width: 100,
+      field: 'createdAt',
+      headerName: '添加时间',
+      width: 95,
       editable: true,
+      valueFormatter: (value: string) => {
+        return new Date(value).toLocaleString()
+      }
     },
     {
-      field: 'mEngagementNum',
-      headerName: '互动中位数',
-      width: 80,
+      field: 'redId',
+      headerName: '红书号',
+      width: 100,
       editable: true,
     },
     {
@@ -186,8 +198,9 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
       if (type === "BLOGGER_INFO") {
         const response = JSON.parse(e.detail.responseText) as IBloggerInfoResponse;
         if (response.code === 0) {
-          let data = response.data;
-          await sendMessage(response.data);
+          const bloggerInfo = response.data;
+          bloggerInfo.createdAt = new Date();
+          await sendMessage(bloggerInfo);
         } else
           console.log("blogger info getting error!")
       }
@@ -215,6 +228,11 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
         getRowId={row => row.userId}
         rows={remoteBloggerInfo}
         initialState={{
+          sorting: {
+            sortModel: [{
+              field: 'createdAt', sort: 'desc'
+            }]
+          },
           pagination: {
             paginationModel: {pageSize: 20}
           }
