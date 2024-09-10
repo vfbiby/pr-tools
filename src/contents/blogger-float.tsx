@@ -192,6 +192,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
         blogger: bloggerInfo
       }
     })
+    getBloggerInfo(setRemoteBloggerInfo);
     console.log(resp.message)
   }
 
