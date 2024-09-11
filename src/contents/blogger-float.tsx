@@ -78,7 +78,7 @@ function BloggerPopup(props: { open: boolean, onClose: () => void }) {
     {
       field: 'noteSign',
       headerName: '机构',
-      width: 90,
+      width: 100,
       editable: true,
       renderCell: (params: GridRenderCellParams<any, { name: string, userId: string }>) => {
         if (!params.value) return '';
