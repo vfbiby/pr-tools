@@ -14,6 +14,7 @@ export const getStyle: PlasmoGetStyle = () => {
   style.textContent = `
     button:hover {
       background-color: pink;
+      // background-color: #3765f9;
     }
   `
   return style

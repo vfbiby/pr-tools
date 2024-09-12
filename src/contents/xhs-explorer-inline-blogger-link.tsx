@@ -14,13 +14,14 @@ export function PgyHomePage(props: { bloggerId: string }) {
   return <div>
     <a
       style={{
-        borderRadius: 10,
-        padding: "8px 16px",
-        boxShadow: "10px 5px 5px pink",
         textDecoration: "none",
+        color: 'white',
+        padding: '8px 16px',
+        borderRadius: '16px',
+        backgroundColor: '#3765f9'
       }}
       href={`https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/${props.bloggerId}`} target="_blank">
-      蒲公英首页
+      蒲公英
     </a>
   </div>;
 }

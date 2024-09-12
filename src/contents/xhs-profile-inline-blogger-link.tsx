@@ -14,9 +14,9 @@ export const getInlineAnchor: PlasmoGetInlineAnchor = async () => ({
 export const getShadowHostId = () => "xhs-profile-inline-unique-id"
 
 function pgyPageLink(bloggerId: string) {
-  return `<div class="reds-tab-item sub-tab-list" style="padding:0 16px;margin-right:0;font-size:16px;" data-v-6bdf495c="">
+  return `<div class="reds-tab-item sub-tab-list" style="padding:0 16px;margin-right:0;font-size:16px;">
     <span>
-      <a style="color: inherit;padding: 8px 16px; border-radius: 16px;background-color: #f7f7f7;box-shadow: 10px 5px 5px pink" href="https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/${bloggerId}" target="_blank">
+      <a style="color: white;padding: 8px 16px; border-radius: 16px;background-color: #3765f9;" href="https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/${bloggerId}" target="_blank">
         蒲公英
       </a>
     </span>
