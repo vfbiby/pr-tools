@@ -26,6 +26,7 @@ function pgyPageLink(bloggerId: string) {
 const XhsExplorerInlineBloggerLink = () => {
   useEffect(() => {
     const id = extractBloggerId(window.location.href);
+    if (!id) return
     const doc = new DOMParser().parseFromString(pgyPageLink(id), 'text/html');
     const element = doc.body.firstChild;
     document.querySelector('.reds-sticky>.reds-tabs-list').append(element)
