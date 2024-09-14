@@ -15,52 +15,28 @@ export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) 
     getBloggerInfo(setRemoteBloggerInfo);
   }, [window.location.href]);
 
-  const saveNotesRateByMessage = useCallback(async (notesRate: any) => {
+  const saveDataByMessage = async (data: any, type: any) => {
     const resp = await sendToBackground({
-      name: "save/notes-rate",
-      body: {notesRate}
-    })
-    console.log(resp.message)
-  }, []);
-
-  async function sendMessage(bloggerInfo: IBloggerInfo) {
-    const resp = await sendToBackground({
-      name: "save/blogger-info",
-      body: {
-        blogger: bloggerInfo
-      }
+      name: 'save/blogger',
+      body: {data, type}
     })
     getBloggerInfo(setRemoteBloggerInfo);
     console.log(resp.message)
-  }
+  };
 
   const onMessageListener = useCallback(
     async (e: any) => {
       const type = e.detail.type
-      if (type === "BLOGGER_INFO") {
-        const response = JSON.parse(e.detail.responseText) as IBloggerInfoResponse;
-        if (response.code === 0) {
-          const bloggerInfo = response.data;
-          bloggerInfo.createdAt = new Date();
-          await sendMessage(bloggerInfo);
-        } else
-          console.log("blogger info getting error!")
+      const response = JSON.parse(e.detail.responseText);
+      if (response.code !== 0) {
+        console.log("blogger info getting error!")
+        return
       }
-      if (type === 'NOTES_RATE') {
-        const userId = extractBloggerIdFromPgyHomepage(window.location.href);
-        if (!userId) {
-          console.log(`has no userId ${userId}, so quit to save notes rate!`)
-          return
-        }
-        const response = JSON.parse(e.detail.responseText);
-        if (response.code === 0) {
-          const notesRate = response.data;
-          notesRate.createdAt = new Date();
-          notesRate.userId = userId;
-          await saveNotesRateByMessage(notesRate);
-        } else
-          console.log("notes rate getting error!")
+      if (!response.data.userId) {
+        response.data.userId = extractBloggerIdFromPgyHomepage(window.location.href);
       }
+      response.data.createdAt = new Date();
+      await saveDataByMessage(response.data, type);
     }, []);
 
   useEffect(() => {
