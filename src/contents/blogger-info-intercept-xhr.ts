@@ -8,26 +8,25 @@ export const config: PlasmoCSConfig = {
 
 const originOpen = XMLHttpRequest.prototype.open
 
+const interceptUrls = [{
+  path: '/api/solar/cooperator/user/blogger',
+  type: 'BLOGGER_INFO'
+}]
+
 function interceptAjax() {
   XMLHttpRequest.prototype.open = function (_: any, url: string) {
     const xhr = this as XMLHttpRequest;
     this.addEventListener("readystatechange", function (event: Event) {
-      if (xhr.readyState === 4) {
-        if (isBloggerInfoUrl(url)) {
-          sendResponseBack("BLOGGER_INFO", event)
-        }
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        interceptUrls.forEach(intercept => {
+          if (url.startsWith(intercept.path)) {
+            sendResponseBack(intercept.type, event)
+          }
+        })
       }
     })
     return originOpen.apply(this, arguments)
   }
-}
-
-function isBloggerInfoUrl(url: string) {
-  return url.startsWith("/api/solar/cooperator/user/blogger")
-}
-
-function isNotesDetailUrl(url: string) {
-  return url.includes("/api/solar/kol/dataV2/notesDetail")
 }
 
 function sendResponseBack(type: string, event) {
