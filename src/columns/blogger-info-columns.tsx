@@ -135,7 +135,7 @@ export const columns: GridColDef<IBloggerInfo>[] = [
     width: 95,
     editable: true,
     valueFormatter: (value: string) => {
-      return new Date(value).toLocaleString()
+      return new Date(value).toLocaleString("zh-CN")
     }
   },
   {

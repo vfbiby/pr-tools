@@ -62,6 +62,8 @@ export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) 
         getRowId={row => row.userId}
         rows={remoteBloggerInfo}
         initialState={{
+          density: 'comfortable',
+          pinnedColumns: {left: ['name'], right: ['createdAt']},
           sorting: {
             sortModel: [{
               field: 'createdAt', sort: 'desc'
