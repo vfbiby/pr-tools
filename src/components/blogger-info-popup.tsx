@@ -5,6 +5,7 @@ import {Box, Drawer} from "@mui/material";
 import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/blogger-info-columns";
 import {getBloggerInfo} from "~src/contents/pgy-float";
+import {GRID_DEFAULT_LOCALE_TEXT} from "~src/localization/localeTextConstants.zh-CN";
 
 export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) {
   const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>()
@@ -55,6 +56,7 @@ export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) 
   >
     <Box sx={{height: "100%"}}>
       <DataGridPremium
+        localeText={GRID_DEFAULT_LOCALE_TEXT}
         slots={{toolbar: GridToolbar}}
         slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
         getRowId={row => row.userId}
