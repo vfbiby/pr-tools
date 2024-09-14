@@ -8,10 +8,16 @@ export const config: PlasmoCSConfig = {
 
 const originOpen = XMLHttpRequest.prototype.open
 
-const interceptUrls = [{
-  path: '/api/solar/cooperator/user/blogger',
-  type: 'BLOGGER_INFO'
-}]
+const interceptUrls = [
+  {
+    path: '/api/solar/cooperator/user/blogger',
+    type: 'BLOGGER_INFO'
+  },
+  {
+    path: '/api/solar/kol/data_v3/notes_rate',
+    type: 'NOTES_RATE'
+  },
+]
 
 function interceptAjax() {
   XMLHttpRequest.prototype.open = function (_: any, url: string) {

@@ -26,6 +26,12 @@ export function PgyHomePage(props: { bloggerId: string }) {
   </div>;
 }
 
+export function extractBloggerIdFromPgyHomepage(href: string) {
+  let urlArr = href.split('?')[0].split('/');
+  if (urlArr[urlArr.length - 2] !== 'blogger-detail') return null;
+  return urlArr[urlArr.length - 1];
+}
+
 export function extractBloggerId(href: string) {
   let urlArr = href.split('?')[0].split('/');
   if (urlArr[urlArr.length - 2] !== 'profile') return null;

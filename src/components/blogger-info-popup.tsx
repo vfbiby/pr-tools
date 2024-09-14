@@ -6,12 +6,21 @@ import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/blogger-info-columns";
 import {getBloggerInfo} from "~src/contents/pgy-float";
 import {zhCN} from "~src/localization/zh-CN";
+import {extractBloggerIdFromPgyHomepage} from "~src/contents/xhs-explorer-inline-blogger-link";
 
 export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) {
   const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>()
 
   useEffect(() => {
     getBloggerInfo(setRemoteBloggerInfo);
+  }, [window.location.href]);
+
+  const saveNotesRateByMessage = useCallback(async (notesRate: any) => {
+    const resp = await sendToBackground({
+      name: "save/notes-rate",
+      body: {notesRate}
+    })
+    console.log(resp.message)
   }, []);
 
   async function sendMessage(bloggerInfo: IBloggerInfo) {
@@ -36,6 +45,21 @@ export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) 
           await sendMessage(bloggerInfo);
         } else
           console.log("blogger info getting error!")
+      }
+      if (type === 'NOTES_RATE') {
+        const userId = extractBloggerIdFromPgyHomepage(window.location.href);
+        if (!userId) {
+          console.log(`has no userId ${userId}, so quit to save notes rate!`)
+          return
+        }
+        const response = JSON.parse(e.detail.responseText);
+        if (response.code === 0) {
+          const notesRate = response.data;
+          notesRate.createdAt = new Date();
+          notesRate.userId = userId;
+          await saveNotesRateByMessage(notesRate);
+        } else
+          console.log("notes rate getting error!")
       }
     }, []);
 
