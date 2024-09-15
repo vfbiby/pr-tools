@@ -1,7 +1,5 @@
 export {}
 
-console.log(new Date().getSeconds())
-
 const post = chrome.declarativeNetRequest.RequestMethod.POST;
 const MODIFY_HEADERS = chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS;
 const SET = chrome.declarativeNetRequest.HeaderOperation.SET;

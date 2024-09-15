@@ -1,11 +1,18 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import {sendToBackground} from "@plasmohq/messaging";
 import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/blogger-info-columns";
-import {getBloggerInfo} from "~src/contents/pgy-float";
 import {zhCN} from "~src/localization/zh-CN";
 import {extractBloggerIdFromPgyHomepage} from "~src/contents/xhs-explorer-inline-blogger-link";
+
+export function getBloggerInfo(setRemoteBloggerInfo: Dispatch<SetStateAction<IBloggerInfo[]>>) {
+  sendToBackground({
+    name: "read/blogger-info"
+  }).then(response => {
+    setRemoteBloggerInfo(response.data)
+  })
+}
 
 export function BloggerInfoTable() {
   const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>([])

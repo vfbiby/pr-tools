@@ -1,21 +1,10 @@
 import type {PlasmoCSConfig} from "plasmo"
-import React, {type Dispatch, type SetStateAction, useState} from "react";
-import {sendToBackground} from "@plasmohq/messaging";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import React, {useState} from "react";
 import {LicenseInfo} from "@mui/x-license-pro";
-import {BloggerInfoTable} from "~src/components/blogger-info-table";
-import {CustomTab, TabList} from "~src/components/custom-tab";
+import {CustomTab} from "~src/components/custom-tab";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
-}
-
-export function getBloggerInfo(setRemoteBloggerInfo: Dispatch<SetStateAction<IBloggerInfo[]>>) {
-  sendToBackground({
-    name: "read/blogger-info"
-  }).then(response => {
-    setRemoteBloggerInfo(response.data)
-  })
 }
 
 const PgyFloat = () => {

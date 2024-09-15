@@ -1,13 +1,12 @@
 import type {PlasmoMessaging} from "@plasmohq/messaging"
 import {db} from "~src/libs/db";
 
+export const typeDBMap = {
+  'BLOGGER_INFO': db.bloggerInfo,
+  'NOTES_RATE': db.notesRate,
+}
+
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
-
-  const typeDBMap = {
-    'BLOGGER_INFO': db.bloggerInfo,
-    'NOTES_RATE': db.notesRate,
-  }
-
   let id: string;
   let message: string
   try {
