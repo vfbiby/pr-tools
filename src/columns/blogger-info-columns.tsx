@@ -1,20 +1,19 @@
-import type {GridColDef, GridRenderCellParams} from "@mui/x-data-grid-premium";
+import type {GridColDef} from "@mui/x-data-grid-premium";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
-import {Box} from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import Avatar from "@mui/material/Avatar";
+
+import {
+  dateValueFormatter,
+  headRender,
+  IDRender,
+  locationRender,
+  noteSignRender,
+  numberRender
+} from "~src/libs/renders";
 
 export const columns: GridColDef<IBloggerInfo>[] = [
   {
     field: 'userId', headerName: 'ID', width: 90,
-    renderCell: (params: GridRenderCellParams<any, string>) => {
-      if (!params.value) return '';
-      return <a target="_blank"
-                href={`https://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/${params.value.trim()}`}>
-        {params.value.trim()}
-      </a>
-    }
+    renderCell: IDRender
   },
   {
     field: 'name',
@@ -27,59 +26,49 @@ export const columns: GridColDef<IBloggerInfo>[] = [
     headerName: '粉丝数',
     width: 80,
     editable: true,
+    renderCell: numberRender,
   },
   {
     field: 'likeCollectCountInfo',
     headerName: '获赞与藏',
     width: 80,
     editable: true,
+    renderCell: numberRender,
   },
   {
     field: 'clickMidNum',
     headerName: '阅读中位数',
     width: 100,
     editable: true,
+    renderCell: numberRender,
   },
   {
     field: 'mEngagementNum',
     headerName: '互动中位数',
     width: 80,
     editable: true,
+    renderCell: numberRender,
   },
   {
     field: 'location',
     headerName: '地区',
     width: 100,
     editable: true,
-    renderCell: (params: GridRenderCellParams<any, string>) => {
-      if (!params.value) return '';
-      return <Box><LocationOnIcon fontSize="small"/>{params.value.trim()}</Box>
-    }
+    renderCell: locationRender
   },
   {
     field: 'noteSign',
     headerName: '机构',
     width: 100,
     editable: true,
-    renderCell: (params: GridRenderCellParams<any, { name: string, userId: string }>) => {
-      if (!params.value) return '';
-      return <Box>
-        <ApartmentIcon fontSize="small" sx={{mr: 0.5}}/>
-        <a target="_blank"
-           href={`https://pgy.xiaohongshu.com/solar/pre-trade/view/mcn-detail/${params.value.userId}`}>
-          {params.value.name}
-        </a></Box>
-    }
+    renderCell: noteSignRender
   },
   {
     field: 'headPhoto',
     headerName: '头像',
     width: 80,
     editable: true,
-    renderCell: (params: GridRenderCellParams<any, string>) => {
-      if (!params.value) return '';
-      return <Avatar src={`${params.value.trim()}`} alt="blogger header photo"/>
-    }
+    renderCell: headRender
   },
   {
     field: 'businessNoteCount',
@@ -92,12 +81,14 @@ export const columns: GridColDef<IBloggerInfo>[] = [
     headerName: '图文报价',
     width: 80,
     editable: true,
+    renderCell: numberRender,
   },
   {
     field: 'videoPrice',
     headerName: '视频报价',
     width: 80,
     editable: true,
+    renderCell: numberRender,
   },
   {
     field: 'cooperateState',
@@ -134,9 +125,7 @@ export const columns: GridColDef<IBloggerInfo>[] = [
     headerName: '添加时间',
     width: 95,
     editable: true,
-    valueFormatter: (value: string) => {
-      return new Date(value).toLocaleString("zh-CN")
-    }
+    valueFormatter: dateValueFormatter
   },
   {
     field: 'redId',

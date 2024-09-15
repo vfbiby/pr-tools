@@ -1,4 +1,4 @@
-type NoteType = { contentTab: string, percent: string }
+type NoteType = { contentTag: string, percent: string }
 
 type Note = {
   "noteId": string;
