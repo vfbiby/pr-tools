@@ -4,6 +4,7 @@ import {db} from "~src/libs/db";
 export const typeDBMap = {
   'BLOGGER_INFO': db.bloggerInfo,
   'NOTES_RATE': db.notesRate,
+  'FANS_PROFILE': db.fansProfile,
 }
 
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
@@ -15,6 +16,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   } catch (e) {
     message = `${e.inner} when saving ${req.body.type}!`
   }
+  console.log(message)
 
   res.send({
     message: message

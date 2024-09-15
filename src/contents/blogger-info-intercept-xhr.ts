@@ -10,12 +10,16 @@ const originOpen = XMLHttpRequest.prototype.open
 
 const interceptUrls = [
   {
-    path: '/api/solar/cooperator/user/blogger',
+    pattern: /\/api\/solar\/cooperator\/user\/blogger/i,
     type: 'BLOGGER_INFO'
   },
   {
-    path: '/api/solar/kol/data_v3/notes_rate',
+    pattern: /\/api\/solar\/kol\/data_v3\/notes_rate/i,
     type: 'NOTES_RATE'
+  },
+  {
+    pattern: /\/api\/solar\/kol\/data\/.*\/fans_profile/i,
+    type: 'FANS_PROFILE'
   },
 ]
 
@@ -25,7 +29,7 @@ function interceptAjax() {
     this.addEventListener("readystatechange", function (event: Event) {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         interceptUrls.forEach(intercept => {
-          if (url.startsWith(intercept.path)) {
+          if (intercept.pattern.test(url)) {
             sendResponseBack(intercept.type, event)
           }
         })

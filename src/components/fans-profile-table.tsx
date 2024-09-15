@@ -1,45 +1,35 @@
 import React, {type Dispatch, type SetStateAction, useEffect, useState} from "react";
-import {sendToBackground} from "@plasmohq/messaging";
 import {zhCN} from "~src/localization/zh-CN";
 import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
-import {columns} from "~src/columns/notes-rate-columns";
-import type {NotesRate} from "~src/columns/NotesRate";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {FansProfile} from "~src/columns/FansProfile";
+import {getDataByMessage} from "~src/components/notes-rate-table";
+import {columns} from "~src/columns/fans-profile-columns";
 
-export function getDataByMessage(type: string = 'NOTES_RATE') {
-  return sendToBackground({
-    name: 'read/blogger',
-    body: {
-      type: type
-    }
-  });
-}
-
-export function getNotesRateByMessage(setNotesRateInfo: Dispatch<SetStateAction<NotesRate[]>>) {
-  const notesRatePromise = getDataByMessage('NOTES_RATE');
-  notesRatePromise.then(response => {
+export function getFansProfileByMessage(setNotesRateInfo: Dispatch<SetStateAction<FansProfile[]>>) {
+  getDataByMessage('FANS_PROFILE').then(response => {
     setNotesRateInfo(response.data)
   })
 }
 
-const getNotesRateWithBlogger = async () => {
-  const {data: notesRates} = await getDataByMessage('NOTES_RATE') as { data: NotesRate[] };
+const getFansProfileWithBlogger = async () => {
+  const {data: fansProfiles} = await getDataByMessage('FANS_PROFILE') as { data: FansProfile[] };
   const {data: bloggerInfos} = await getDataByMessage('BLOGGER_INFO') as { data: IBloggerInfo[] };
-  notesRates.map(notesRate => {
-    notesRate.blogger = bloggerInfos.find(blogger => blogger.userId === notesRate.userId)
+  fansProfiles.map(fansProfile => {
+    fansProfile.blogger = bloggerInfos.find(blogger => blogger.userId === fansProfile.userId)
   })
-  return notesRates;
+  return fansProfiles;
 }
 
-export const NotesRateTable = () => {
-  const [notesRate, setNotesRate] = useState<NotesRate[]>([])
+export const FansProfileTable = () => {
+  const [fansProfile, setFansProfile] = useState<FansProfile[]>([])
 
   useEffect(() => {
-    getNotesRateWithBlogger().then(notesRate => setNotesRate(notesRate))
+    getFansProfileWithBlogger().then(fansProfile => setFansProfile(fansProfile))
   }, []);
 
   useEffect(() => {
-    getNotesRateByMessage(setNotesRate);
+    getFansProfileByMessage(setFansProfile);
   }, [window.location.href]);
 
   return <React.Fragment>
@@ -48,7 +38,7 @@ export const NotesRateTable = () => {
       slots={{toolbar: GridToolbar}}
       slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
       getRowId={row => row.userId}
-      rows={notesRate}
+      rows={fansProfile}
       initialState={{
         density: 'comfortable',
         pinnedColumns: {left: ['name'], right: ['createdAt']},

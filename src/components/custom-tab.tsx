@@ -2,6 +2,7 @@ import {Box, Drawer, Tab, Tabs} from "@mui/material";
 import React, {useState} from "react";
 import {BloggerInfoTable} from "~src/components/blogger-info-table";
 import {NotesRateTable} from "~src/components/notes-rate-table";
+import {FansProfileTable} from "~src/components/fans-profile-table";
 
 export interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,7 +38,7 @@ export function TabList(props: { value: number, onChange: (event: React.Syntheti
     <Tabs value={props.value} onChange={props.onChange} aria-label="basic tabs example">
       <Tab label="博主信息" {...a11yProps(0)} />
       <Tab label="笔记数据" {...a11yProps(1)} />
-      <Tab label="Item Three" {...a11yProps(2)} />
+      <Tab label="粉丝画像" {...a11yProps(2)} />
     </Tabs>
   </Box>;
 }
@@ -65,7 +66,7 @@ export const CustomTab = (props: { open: boolean, onClose: () => void }) => {
       <NotesRateTable/>
     </CustomTabPanel>
     <CustomTabPanel tabValue={tabValue} index={2}>
-      Item Three
+      <FansProfileTable/>
     </CustomTabPanel>
   </Drawer>
 }
