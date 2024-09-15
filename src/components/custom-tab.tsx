@@ -1,6 +1,7 @@
 import {Box, Drawer, Tab, Tabs} from "@mui/material";
 import React, {useState} from "react";
-import {BloggerInfo} from "~src/components/blogger-info";
+import {BloggerInfoTable} from "~src/components/blogger-info-table";
+import {NotesRateTable} from "~src/components/notes-rate-table";
 
 export interface TabPanelProps {
   children?: React.ReactNode;
@@ -58,10 +59,10 @@ export const CustomTab = (props: { open: boolean, onClose: () => void }) => {
   >
     <TabList value={tabValue} onChange={handleChange}/>
     <CustomTabPanel tabValue={tabValue} index={0}>
-      <BloggerInfo/>
+      <BloggerInfoTable/>
     </CustomTabPanel>
     <CustomTabPanel tabValue={tabValue} index={1}>
-      Item Two
+      <NotesRateTable/>
     </CustomTabPanel>
     <CustomTabPanel tabValue={tabValue} index={2}>
       Item Three

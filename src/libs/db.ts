@@ -1,10 +1,10 @@
 import Dexie, {type EntityTable} from "dexie";
 
-import type {IBloggerInfo} from "~src/libs/BloggerInfo";
+import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 
 const db = new Dexie('BloggerDB') as Dexie & {
   bloggerInfo: EntityTable<IBloggerInfo, "userId">,
-  notesRate: EntityTable<any, 'userId'>
+  notesRate: EntityTable<NotesRate, 'userId'>
 };
 
 db.version(2).stores({

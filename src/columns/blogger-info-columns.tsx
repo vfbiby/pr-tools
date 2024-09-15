@@ -1,5 +1,5 @@
 import type {GridColDef, GridRenderCellParams} from "@mui/x-data-grid-premium";
-import type {IBloggerInfo} from "~src/libs/BloggerInfo";
+import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import {Box} from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ApartmentIcon from "@mui/icons-material/Apartment";
