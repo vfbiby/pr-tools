@@ -1,10 +1,25 @@
 import type {GridColDef} from "@mui/x-data-grid-premium";
-import {contentTagRender, dateValueFormatter, IDRender, numberRender, PercentageRender} from "~src/libs/renders";
+import {
+  bloggerNameRender,
+  contentTagRender,
+  dateValueFormatter,
+  IDRender,
+  numberRender,
+  PercentageRender
+} from "~src/libs/renders";
+import type {NotesRate} from "~src/columns/NotesRate";
 
 export const columns: GridColDef<NotesRate>[] = [
   {
     field: 'userId', headerName: 'ID', width: 90,
     renderCell: IDRender
+  },
+  {
+    field: 'blogger',
+    headerName: '名字',
+    width: 80,
+    editable: true,
+    renderCell: bloggerNameRender,
   },
   {
     field: 'noteNumber',

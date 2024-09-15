@@ -3,10 +3,17 @@ import {Box} from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Avatar from "@mui/material/Avatar";
 import ApartmentIcon from "@mui/icons-material/Apartment";
+import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {NoteType} from "~src/columns/NotesRate";
+
+export const bloggerNameRender = (params: GridRenderCellParams<any, IBloggerInfo>) => {
+  return <span>{params.value?.name.trim()}</span>
+};
 
 export const numberRender = (params: GridRenderCellParams<any, number>) => {
   return <span>{params.value?.toLocaleString('en-US')}</span>
 };
+
 export const IDRender = (params: GridRenderCellParams<any, string>) => {
   if (!params.value) return '';
   return <a target="_blank"
