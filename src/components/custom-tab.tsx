@@ -53,7 +53,7 @@ export const CustomTab = (props: { open: boolean, onClose: () => void }) => {
     open={props.open}
     onClose={props.onClose}
     PaperProps={{
-      sx: {width: "100%", height: "70%"}
+      sx: {width: "100%", height: "80%"}
     }}
   >
     <TabList value={tabValue} onChange={handleChange}/>
