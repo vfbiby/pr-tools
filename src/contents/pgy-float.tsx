@@ -1,9 +1,10 @@
 import type {PlasmoCSConfig} from "plasmo"
-import {type Dispatch, type SetStateAction, useState} from "react";
+import React, {type Dispatch, type SetStateAction, useState} from "react";
 import {sendToBackground} from "@plasmohq/messaging";
 import type {IBloggerInfo} from "~src/libs/BloggerInfo";
 import {LicenseInfo} from "@mui/x-license-pro";
-import {BloggerInfoPopup} from "~src/components/blogger-info-popup";
+import {BloggerInfo} from "~src/components/blogger-info";
+import {CustomTab, TabList} from "~src/components/custom-tab";
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
@@ -24,7 +25,7 @@ const PgyFloat = () => {
   return (
     <div style={{margin: "200px 0 0 10px"}}>
       {!openPopup && <button onClick={() => setOpenPopup(true)}>show</button>}
-      <BloggerInfoPopup open={openPopup} onClose={() => setOpenPopup(false)}/>
+      <CustomTab open={openPopup} onClose={() => setOpenPopup(false)}/>
     </div>
   )
 }

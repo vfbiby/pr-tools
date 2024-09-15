@@ -1,15 +1,15 @@
-import {useCallback, useEffect, useState} from "react";
-import type {IBloggerInfo, IBloggerInfoResponse} from "~src/libs/BloggerInfo";
+import React, {useCallback, useEffect, useState} from "react";
+import type {IBloggerInfo} from "~src/libs/BloggerInfo";
 import {sendToBackground} from "@plasmohq/messaging";
-import {Box, Drawer} from "@mui/material";
 import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/blogger-info-columns";
 import {getBloggerInfo} from "~src/contents/pgy-float";
 import {zhCN} from "~src/localization/zh-CN";
 import {extractBloggerIdFromPgyHomepage} from "~src/contents/xhs-explorer-inline-blogger-link";
+import {Box} from "@mui/material";
 
-export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) {
-  const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>()
+export function BloggerInfo() {
+  const [remoteBloggerInfo, setRemoteBloggerInfo] = useState<IBloggerInfo[]>([])
 
   useEffect(() => {
     getBloggerInfo(setRemoteBloggerInfo);
@@ -46,39 +46,29 @@ export function BloggerInfoPopup(props: { open: boolean, onClose: () => void }) 
     }
   }, [])
 
-  return <Drawer
-    anchor="bottom"
-    open={props.open}
-    onClose={props.onClose}
-    PaperProps={{
-      sx: {width: "100%", height: "70%"}
+  return <DataGridPremium
+    localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
+    slots={{toolbar: GridToolbar}}
+    slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
+    getRowId={row => row.userId}
+    rows={remoteBloggerInfo}
+    initialState={{
+      density: 'comfortable',
+      pinnedColumns: {left: ['name'], right: ['createdAt']},
+      sorting: {
+        sortModel: [{
+          field: 'createdAt', sort: 'desc'
+        }]
+      },
+      pagination: {
+        paginationModel: {pageSize: 20}
+      }
     }}
-  >
-    <Box sx={{height: "100%"}}>
-      <DataGridPremium
-        localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-        slots={{toolbar: GridToolbar}}
-        slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
-        getRowId={row => row.userId}
-        rows={remoteBloggerInfo}
-        initialState={{
-          density: 'comfortable',
-          pinnedColumns: {left: ['name'], right: ['createdAt']},
-          sorting: {
-            sortModel: [{
-              field: 'createdAt', sort: 'desc'
-            }]
-          },
-          pagination: {
-            paginationModel: {pageSize: 20}
-          }
-        }}
-        columns={columns}
-        pagination={true}
-        pageSizeOptions={[5, 10, 20, 50, 100, {value: 1000, label: '1千'}]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-    </Box>
-  </Drawer>;
+    columns={columns}
+    pagination={true}
+    pageSizeOptions={[5, 10, 20, 50, 100, {value: 1000, label: '1千'}]}
+    checkboxSelection
+    disableRowSelectionOnClick
+  />
+
 }
