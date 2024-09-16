@@ -1,15 +1,35 @@
 import React, {type Dispatch, type SetStateAction, useEffect, useState} from "react";
 import {zhCN} from "~src/localization/zh-CN";
-import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
+import {
+  DataGridPremium,
+  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport,
+  GridToolbarFilterButton
+} from "@mui/x-data-grid-premium";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import {getDataByMessage} from "~src/components/notes-rate-table";
 import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
+import {Box} from "@mui/material";
 
 export function getFansSummaryByMessage(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
   getDataByMessage('FANS_PROFILE').then(response => {
     setFansSummary(response.data)
   })
+}
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton/>
+      <GridToolbarFilterButton/>
+      <GridToolbarDensitySelector/>
+      <GridToolbarExport
+        excelOptions={{disableToolbarButton: true}}
+      />
+    </GridToolbarContainer>
+  );
 }
 
 const getFansSummaryWithBlogger = async () => {
@@ -35,8 +55,7 @@ export const FansSummaryTable = () => {
   return <React.Fragment>
     <DataGridPremium
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      slots={{toolbar: GridToolbar}}
-      slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
+      slots={{toolbar: CustomToolbar}}
       getRowId={row => row.userId}
       rows={fansSummary}
       initialState={{
