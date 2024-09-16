@@ -17,7 +17,8 @@ export const FansSummaryTable = () => {
     return (
       <CustomToolbar
         deleteButton={<DeleteButton
-          onClick={() => handleDelete(rowSelectionModel, () => getDataAnd(setFansSummary))}/>}/>
+          onClick={() => handleDelete(rowSelectionModel, () => getDataAnd(setFansSummary))}
+          selectedRows={rowSelectionModel}/>}/>
     )
   }, [rowSelectionModel]);
 

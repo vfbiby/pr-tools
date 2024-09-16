@@ -8,8 +8,6 @@ import {
   GridToolbarFilterButton
 } from "@mui/x-data-grid-premium";
 import {getDataByMessage} from "~src/components/notes-rate-table";
-import type {FansSummary} from "~src/columns/FansSummary";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import {sendToBackground} from "@plasmohq/messaging";
 import {Button} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,9 +27,11 @@ export function CustomToolbar({deleteButton}: { deleteButton: ReactElement }) {
   );
 }
 
-export function DeleteButton(props: { onClick: () => Promise<void> }) {
-  return <Button onClick={props.onClick}>
-    <DeleteIcon sx={{pr: 1, fontSize: 28, color: red[600]}}/>
+export function DeleteButton(props: { onClick: () => Promise<void>, selectedRows: GridRowSelectionModel }) {
+  return <Button
+    disabled={props.selectedRows.length === 0}
+    onClick={props.onClick}
+    startIcon={<DeleteIcon sx={{fontSize: 28, color: red[600]}}/>}>
     删除
   </Button>;
 }
@@ -57,14 +57,14 @@ export const handleDelete = async (selectedRow: GridRowSelectionModel, refresh?:
 }
 
 export const getTableWithOtherTable = async (table: string, otherTable: string, referenceKey: string) => {
-  const {data: fansSummaries} = await getDataByMessage(table) as { data: FansSummary[] };
-  const {data: bloggerInfos} = await getDataByMessage(otherTable) as { data: IBloggerInfo[] };
-  fansSummaries.forEach(fansProfile => {
-    fansProfile.blogger = bloggerInfos.find(blogger => blogger[referenceKey] === fansProfile[referenceKey])
+  const {data: tableRecords} = await getDataByMessage(table) as { data: any[] };
+  const {data: otherTableRecords} = await getDataByMessage(otherTable) as { data: any[] };
+  tableRecords.forEach(tableRecord => {
+    tableRecord.blogger = otherTableRecords.find(otherTableRecord => otherTableRecord[referenceKey] === tableRecord[referenceKey])
   })
-  return fansSummaries;
+  return tableRecords;
 }
 
-export function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
+export function getDataAnd<T>(setFansSummary: Dispatch<SetStateAction<T[]>>) {
   getTableWithOtherTable('FANS_SUMMARY', 'BLOGGER_INFO', "userId").then(fansSummary => setFansSummary(fansSummary))
 }
