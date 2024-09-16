@@ -5,16 +5,7 @@ import Avatar from "@mui/material/Avatar";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import type {NoteType} from "~src/columns/NotesRate";
-import type {
-  FansProfileAge,
-  FansProfileCity,
-  FansProfileDevice,
-  FansProfileGender,
-  FansProfileInterest,
-  FansProfileProvince
-} from "~src/columns/FansProfile";
 import React from "react";
-import {PercentageIndicator, PercentageSimple} from "~src/columns/fans-profile-columns";
 
 export const bloggerNameRender = (params: GridRenderCellParams<any, IBloggerInfo>) => {
   return <span>{params.value?.name.trim()}</span>
@@ -37,19 +28,17 @@ export const dateValueFormatter = (value: string) => {
 };
 
 export const contentTagRender = (params: GridRenderCellParams<any, NoteType[]>) => {
-  if (!params.value) return '';
-  return <Box>{params.value.map((type, index) =>
+  return <Box>{params.value?.map((type, index) =>
     <span key={index}>{type.contentTag}: {type.percent}%</span>)}</Box>
 };
 
 export const PercentageRender = (params: GridRenderCellParams<any, string>) => {
-  if (!params.value) return '';
-  return <span>{params.value.trim()}%</span>
+  return <span>{params.value?.trim()}%</span>
 };
 
 export const headRender = (params: GridRenderCellParams<any, string>) => {
   if (!params.value) return '';
-  return <Avatar src={`${params.value.trim()}`} alt="blogger header photo"/>
+  return <Avatar src={`${params.value?.trim()}`} alt="blogger header photo"/>
 };
 
 export const locationRender = (params: GridRenderCellParams<any, string>) => {
@@ -66,32 +55,4 @@ export const noteSignRender = (params: GridRenderCellParams<any, { name: string,
       {params.value.name}
     </a></Box>
 };
-export const agesRender = (params: GridRenderCellParams<any, FansProfileAge[]>) =>
-  <React.Fragment>{params.value?.slice(0, 3).map((age, index) =>
-    <PercentageIndicator key={index} index={index} name={age.group} value={age.percent}/>)}
-  </React.Fragment>;
 
-export const interestRender = (params: GridRenderCellParams<any, FansProfileInterest[]>) =>
-  <React.Fragment>{params.value?.slice(0, 3).map((interest, index) =>
-    <PercentageIndicator key={index} index={index} name={interest.name} value={interest.percent}/>)}
-  </React.Fragment>;
-
-export const provinceRender = (params: GridRenderCellParams<any, FansProfileProvince[]>) =>
-  <React.Fragment>{params.value?.slice(0, 3).map((province, index) =>
-    <PercentageIndicator key={index} index={index} name={province.name} value={province.percent}/>)}
-  </React.Fragment>
-
-export const cityRender = (params: GridRenderCellParams<any, FansProfileCity[]>) =>
-  <React.Fragment>{params.value?.slice(0, 3).map((city, index) =>
-    <PercentageIndicator key={index} index={index} name={city.name} value={city.percent}/>)}
-  </React.Fragment>
-
-export const deviceRender = (params: GridRenderCellParams<any, FansProfileDevice[]>) =>
-  <React.Fragment>{params.value?.slice(0, 3).map((device, index) =>
-    <PercentageIndicator key={index} index={index} name={device.desc} value={device.percent}/>)}
-  </React.Fragment>
-
-export const genderRender = (params: GridRenderCellParams<any, FansProfileGender>) =>
-  <React.Fragment>
-    <span>女性：<PercentageSimple value={params.value.female}/>，男性：<PercentageSimple value={params.value.male}/></span>
-  </React.Fragment>

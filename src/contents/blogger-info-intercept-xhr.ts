@@ -21,6 +21,10 @@ const interceptUrls = [
     pattern: /\/api\/solar\/kol\/data\/.*\/fans_profile/i,
     type: 'FANS_PROFILE'
   },
+  {
+    pattern: /\/api\/solar\/kol\/data_v3\/fans_summary/i,
+    type: 'FANS_SUMMARY'
+  },
 ]
 
 function interceptAjax() {

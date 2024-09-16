@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import {BloggerInfoTable} from "~src/components/blogger-info-table";
 import {NotesRateTable} from "~src/components/notes-rate-table";
 import {FansProfileTable} from "~src/components/fans-profile-table";
+import {FansSummaryTable} from "~src/components/fans-summary-table";
 
 export interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,6 +40,7 @@ export function TabList(props: { value: number, onChange: (event: React.Syntheti
       <Tab label="博主信息" {...a11yProps(0)} />
       <Tab label="笔记数据" {...a11yProps(1)} />
       <Tab label="粉丝画像" {...a11yProps(2)} />
+      <Tab label="粉丝概要" {...a11yProps(3)} />
     </Tabs>
   </Box>;
 }
@@ -67,6 +69,9 @@ export const CustomTab = (props: { open: boolean, onClose: () => void }) => {
     </CustomTabPanel>
     <CustomTabPanel tabValue={tabValue} index={2}>
       <FansProfileTable/>
+    </CustomTabPanel>
+    <CustomTabPanel tabValue={tabValue} index={3}>
+      <FansSummaryTable/>
     </CustomTabPanel>
   </Drawer>
 }

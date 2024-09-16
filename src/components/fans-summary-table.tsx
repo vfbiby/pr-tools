@@ -2,34 +2,34 @@ import React, {type Dispatch, type SetStateAction, useEffect, useState} from "re
 import {zhCN} from "~src/localization/zh-CN";
 import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
-import type {FansProfile} from "~src/columns/FansProfile";
 import {getDataByMessage} from "~src/components/notes-rate-table";
-import {columns} from "~src/columns/fans-profile-columns";
+import type {FansSummary} from "~src/columns/FansSummary";
+import {columns} from "~src/columns/fans-summary-columns";
 
-export function getFansProfileByMessage(setFansProfile: Dispatch<SetStateAction<FansProfile[]>>) {
+export function getFansSummaryByMessage(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
   getDataByMessage('FANS_PROFILE').then(response => {
-    setFansProfile(response.data)
+    setFansSummary(response.data)
   })
 }
 
-const getFansProfileWithBlogger = async () => {
-  const {data: fansProfiles} = await getDataByMessage('FANS_PROFILE') as { data: FansProfile[] };
+const getFansSummaryWithBlogger = async () => {
+  const {data: fansSummaries} = await getDataByMessage('FANS_SUMMARY') as { data: FansSummary[] };
   const {data: bloggerInfos} = await getDataByMessage('BLOGGER_INFO') as { data: IBloggerInfo[] };
-  fansProfiles.map(fansProfile => {
+  fansSummaries.map(fansProfile => {
     fansProfile.blogger = bloggerInfos.find(blogger => blogger.userId === fansProfile.userId)
   })
-  return fansProfiles;
+  return fansSummaries;
 }
 
-export const FansProfileTable = () => {
-  const [fansProfile, setFansProfile] = useState<FansProfile[]>([])
+export const FansSummaryTable = () => {
+  const [fansSummary, setFansSummary] = useState<FansSummary[]>([])
 
   useEffect(() => {
-    getFansProfileWithBlogger().then(fansProfile => setFansProfile(fansProfile))
+    getFansSummaryWithBlogger().then(fansSummary => setFansSummary(fansSummary))
   }, []);
 
   useEffect(() => {
-    getFansProfileByMessage(setFansProfile);
+    getFansSummaryByMessage(setFansSummary);
   }, [window.location.href]);
 
   return <React.Fragment>
@@ -38,7 +38,7 @@ export const FansProfileTable = () => {
       slots={{toolbar: GridToolbar}}
       slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
       getRowId={row => row.userId}
-      rows={fansProfile}
+      rows={fansSummary}
       initialState={{
         density: 'comfortable',
         pinnedColumns: {left: ['name'], right: ['createdAt']},
