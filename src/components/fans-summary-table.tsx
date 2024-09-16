@@ -1,4 +1,12 @@
-import React, {type Dispatch, type SetStateAction, useEffect, useState} from "react";
+import React, {
+  type Dispatch, type MutableRefObject,
+  type ReactElement,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import {zhCN} from "~src/localization/zh-CN";
 import {
   DataGridPremium, type GridRowSelectionModel,
@@ -15,28 +23,45 @@ import {sendToBackground} from "@plasmohq/messaging";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {red} from "@mui/material/colors";
 
-export function getFansSummaryByMessage(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
-  getDataByMessage('FANS_PROFILE').then(response => {
-    setFansSummary(response.data)
-  })
+export function CustomToolbar({deleteButton}: { deleteButton: ReactElement }) {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton/>
+      <GridToolbarFilterButton/>
+      <GridToolbarDensitySelector/>
+      <GridToolbarExport
+        excelOptions={{disableToolbarButton: true}}
+      />
+      {deleteButton}
+    </GridToolbarContainer>
+  );
 }
 
-const handleDelete = async (selectedRow: GridRowSelectionModel) => {
-  console.log('entries', [...selectedRow])
-  const userIds = Array.from(selectedRow).map(value => value);
-  if (userIds.length <= 0) {
-    console.log('user ids is 0')
-    return
-  }
-  console.log('userIds', userIds)
-  const deletedCount = await sendToBackground({
+function DeleteButton(props: { onClick: () => Promise<void> }) {
+  return <Button onClick={props.onClick}>
+    <DeleteIcon sx={{pr: 1, fontSize: 28, color: red[600]}}/>
+    删除
+  </Button>;
+}
+
+export async function deleteRecordsByIdsThroughMessage(type: string = 'FANS_SUMMARY', userIds: (string | number)[]) {
+  await sendToBackground({
     name: 'delete/blogger',
     body: {
-      type: 'FANS_SUMMARY',
+      type: type,
       ids: userIds
     }
   });
-  console.log(deletedCount)
+}
+
+const handleDelete = async (selectedRow: GridRowSelectionModel, refresh?: () => void) => {
+  const userIds = Array.from(selectedRow).map(value => value);
+  if (userIds.length <= 0) {
+    console.log('0 user ids to delete')
+    return
+  }
+  await deleteRecordsByIdsThroughMessage('FANS_SUMMARY', userIds);
+  refresh()
 }
 
 const getFansSummaryWithBlogger = async () => {
@@ -48,34 +73,25 @@ const getFansSummaryWithBlogger = async () => {
   return fansSummaries;
 }
 
+function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
+  getFansSummaryWithBlogger().then(fansSummary => setFansSummary(fansSummary))
+}
+
 export const FansSummaryTable = () => {
   const [fansSummary, setFansSummary] = useState<FansSummary[]>([])
   const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
 
   useEffect(() => {
-    getFansSummaryWithBlogger().then(fansSummary => setFansSummary(fansSummary))
-  }, []);
-
-  useEffect(() => {
-    getFansSummaryByMessage(setFansSummary);
+    getDataAnd(setFansSummary);
   }, [window.location.href]);
 
-  function CustomToolbar() {
+  const ConstructToolbar = useCallback(() => {
     return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton/>
-        <GridToolbarFilterButton/>
-        <GridToolbarDensitySelector/>
-        <GridToolbarExport
-          excelOptions={{disableToolbarButton: true}}
-        />
-        <Button onClick={() => handleDelete(rowSelectionModel)}>
-          <DeleteIcon sx={{pr: 1, fontSize: 28, color: red[600]}}/>
-          删除
-        </Button>
-      </GridToolbarContainer>
-    );
-  }
+      <CustomToolbar
+        deleteButton={<DeleteButton
+          onClick={() => handleDelete(rowSelectionModel, () => getDataAnd(setFansSummary))}/>}/>
+    )
+  }, [rowSelectionModel]);
 
   return <React.Fragment>
     <DataGridPremium
@@ -83,7 +99,7 @@ export const FansSummaryTable = () => {
         setRowSelectionModel(newRowSelectionModel)
       }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      slots={{toolbar: CustomToolbar}}
+      slots={{toolbar: ConstructToolbar}}
       getRowId={row => row.userId}
       rows={fansSummary}
       initialState={{

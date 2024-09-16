@@ -5,7 +5,7 @@
   "description": "A basic Plasmo extension.",
   "author": "james",
   "scripts": {
-    "dev": "plasmo dev --verbose",
+    "dev": "plasmo dev",
     "build": "plasmo build",
     "package": "plasmo package"
   },
