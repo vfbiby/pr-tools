@@ -5,7 +5,7 @@ import type {FansProfile} from "~src/columns/FansProfile";
 import {columns} from "~src/columns/fans-profile-columns";
 import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
-const FANS_PROFILE = 'FANS_PROFILE';
+export const FANS_PROFILE = 'FANS_PROFILE';
 
 function getDataAnd<T>(setNotesRate: Dispatch<SetStateAction<T[]>>) {
   getTableWithOtherTable(FANS_PROFILE, 'BLOGGER_INFO', "userId").then(notesRate => setNotesRate(notesRate))

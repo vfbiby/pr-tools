@@ -4,9 +4,11 @@ import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-prem
 import {columns} from "~src/columns/blogger-info-columns";
 import {zhCN} from "~src/localization/zh-CN";
 import {CustomToolbar, DeleteButton, handleDelete} from "~src/components/common-utils";
-import {getDataByMessage} from "~src/components/notes-rate-table";
+import {getDataByMessage, NOTES_RATE} from "~src/components/notes-rate-table";
+import {FANS_SUMMARY} from "~src/components/fans-summary-table";
+import {FANS_PROFILE} from "~src/components/fans-profile-table";
 
-const BLOGGER_INFO = 'BLOGGER_INFO';
+export const BLOGGER_INFO = 'BLOGGER_INFO';
 
 export function getBloggerInfo(setBloggerInfo: Dispatch<SetStateAction<BloggerInfo[]>>) {
   getDataByMessage(BLOGGER_INFO)
@@ -22,7 +24,8 @@ export function BloggerInfoTable() {
   }, []);
 
   const ConstructToolbar = useCallback(() => {
-    const handleOnClick = () => handleDelete(BLOGGER_INFO, rowSelectionModel, () => getBloggerInfo(setBloggerInfo));
+    const tables = [BLOGGER_INFO, NOTES_RATE, FANS_SUMMARY, FANS_PROFILE];
+    const handleOnClick = () => handleDelete(tables, rowSelectionModel, () => getBloggerInfo(setBloggerInfo));
     return (
       <CustomToolbar deleteButton={<DeleteButton onClick={handleOnClick} selectedRows={rowSelectionModel}/>}/>
     )

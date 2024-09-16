@@ -5,8 +5,10 @@ import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
 import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
+export const FANS_SUMMARY = 'FANS_SUMMARY';
+
 function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
-  getTableWithOtherTable('FANS_SUMMARY', 'BLOGGER_INFO', "userId").then(fansSummary => setFansSummary(fansSummary))
+  getTableWithOtherTable(FANS_SUMMARY, 'BLOGGER_INFO', "userId").then(fansSummary => setFansSummary(fansSummary))
 }
 
 export const FansSummaryTable = () => {
@@ -21,7 +23,7 @@ export const FansSummaryTable = () => {
     return (
       <CustomToolbar
         deleteButton={<DeleteButton
-          onClick={() => handleDelete('FANS_SUMMARY', rowSelectionModel, () => getDataAnd(setFansSummary))}
+          onClick={() => handleDelete(FANS_SUMMARY, rowSelectionModel, () => getDataAnd(setFansSummary))}
           selectedRows={rowSelectionModel}/>}/>
     )
   }, [rowSelectionModel]);

@@ -46,13 +46,18 @@ export async function deleteRecordsByIdsThroughMessage(type: string, userIds: (s
   });
 }
 
-export const handleDelete = async (table: string, selectedRow: GridRowSelectionModel, refresh?: () => void) => {
+export const handleDelete = async (tables: string | string[], selectedRow: GridRowSelectionModel, refresh?: () => void) => {
   const userIds = Array.from(selectedRow).map(value => value);
   if (userIds.length <= 0) {
     console.log('0 user ids to delete')
     return
   }
-  await deleteRecordsByIdsThroughMessage(table, userIds);
+  if (!Array.isArray(tables)) {
+    await deleteRecordsByIdsThroughMessage(tables, userIds);
+  }
+  for (const table of tables) {
+    await deleteRecordsByIdsThroughMessage(table, userIds);
+  }
   refresh()
 }
 

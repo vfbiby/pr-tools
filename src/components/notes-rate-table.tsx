@@ -6,7 +6,7 @@ import {columns} from "~src/columns/notes-rate-columns";
 import type {NotesRate} from "~src/columns/NotesRate";
 import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
-const NOTES_RATE = 'NOTES_RATE';
+export const NOTES_RATE = 'NOTES_RATE';
 
 function getDataAnd<T>(setNotesRate: Dispatch<SetStateAction<T[]>>) {
   getTableWithOtherTable(NOTES_RATE, 'BLOGGER_INFO', "userId").then(notesRate => setNotesRate(notesRate))
