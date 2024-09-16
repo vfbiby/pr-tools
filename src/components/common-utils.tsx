@@ -36,11 +36,11 @@ export function DeleteButton(props: { onClick: () => Promise<void>, selectedRows
   </Button>;
 }
 
-export async function deleteRecordsByIdsThroughMessage(type: string, userIds: (string | number)[]) {
-  await sendToBackground({
+export async function deleteRecordsByIdsThroughMessage(tables: string | string[], userIds: (string | number)[]) {
+  return await sendToBackground({
     name: 'delete/blogger',
     body: {
-      type: type,
+      tables,
       ids: userIds
     }
   });
@@ -52,12 +52,7 @@ export const handleDelete = async (tables: string | string[], selectedRow: GridR
     console.log('0 user ids to delete')
     return
   }
-  if (!Array.isArray(tables)) {
-    await deleteRecordsByIdsThroughMessage(tables, userIds);
-  }
-  for (const table of tables) {
-    await deleteRecordsByIdsThroughMessage(table, userIds);
-  }
+  await deleteRecordsByIdsThroughMessage(tables, userIds);
   refresh()
 }
 
