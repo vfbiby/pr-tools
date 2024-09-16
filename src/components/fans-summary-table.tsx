@@ -1,81 +1,9 @@
-import React, {
-  type Dispatch, type MutableRefObject,
-  type ReactElement,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {zhCN} from "~src/localization/zh-CN";
-import {
-  DataGridPremium, type GridRowSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport,
-  GridToolbarFilterButton
-} from "@mui/x-data-grid-premium";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
-import {getDataByMessage} from "~src/components/notes-rate-table";
+import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-premium";
 import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
-import {Button} from "@mui/material";
-import {sendToBackground} from "@plasmohq/messaging";
-import DeleteIcon from '@mui/icons-material/Delete';
-import {red} from "@mui/material/colors";
-
-export function CustomToolbar({deleteButton}: { deleteButton: ReactElement }) {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarColumnsButton/>
-      <GridToolbarFilterButton/>
-      <GridToolbarDensitySelector/>
-      <GridToolbarExport
-        excelOptions={{disableToolbarButton: true}}
-      />
-      {deleteButton}
-    </GridToolbarContainer>
-  );
-}
-
-function DeleteButton(props: { onClick: () => Promise<void> }) {
-  return <Button onClick={props.onClick}>
-    <DeleteIcon sx={{pr: 1, fontSize: 28, color: red[600]}}/>
-    删除
-  </Button>;
-}
-
-export async function deleteRecordsByIdsThroughMessage(type: string, userIds: (string | number)[]) {
-  await sendToBackground({
-    name: 'delete/blogger',
-    body: {
-      type: type,
-      ids: userIds
-    }
-  });
-}
-
-const handleDelete = async (selectedRow: GridRowSelectionModel, refresh?: () => void) => {
-  const userIds = Array.from(selectedRow).map(value => value);
-  if (userIds.length <= 0) {
-    console.log('0 user ids to delete')
-    return
-  }
-  await deleteRecordsByIdsThroughMessage('FANS_SUMMARY', userIds);
-  refresh()
-}
-
-const getFansSummaryWithBlogger = async () => {
-  const {data: fansSummaries} = await getDataByMessage('FANS_SUMMARY') as { data: FansSummary[] };
-  const {data: bloggerInfos} = await getDataByMessage('BLOGGER_INFO') as { data: IBloggerInfo[] };
-  fansSummaries.map(fansProfile => {
-    fansProfile.blogger = bloggerInfos.find(blogger => blogger.userId === fansProfile.userId)
-  })
-  return fansSummaries;
-}
-
-function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
-  getFansSummaryWithBlogger().then(fansSummary => setFansSummary(fansSummary))
-}
+import {CustomToolbar, DeleteButton, getDataAnd, handleDelete} from "~src/components/common-utils";
 
 export const FansSummaryTable = () => {
   const [fansSummary, setFansSummary] = useState<FansSummary[]>([])
