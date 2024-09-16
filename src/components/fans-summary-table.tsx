@@ -1,8 +1,7 @@
 import React, {type Dispatch, type SetStateAction, useEffect, useState} from "react";
 import {zhCN} from "~src/localization/zh-CN";
 import {
-  DataGridPremium,
-  GridToolbar,
+  DataGridPremium, type GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport,
   GridToolbarFilterButton
@@ -11,7 +10,8 @@ import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import {getDataByMessage} from "~src/components/notes-rate-table";
 import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
-import {Box} from "@mui/material";
+import {Button} from "@mui/material";
+import {sendToBackground} from "@plasmohq/messaging";
 
 export function getFansSummaryByMessage(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
   getDataByMessage('FANS_PROFILE').then(response => {
@@ -19,17 +19,22 @@ export function getFansSummaryByMessage(setFansSummary: Dispatch<SetStateAction<
   })
 }
 
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarColumnsButton/>
-      <GridToolbarFilterButton/>
-      <GridToolbarDensitySelector/>
-      <GridToolbarExport
-        excelOptions={{disableToolbarButton: true}}
-      />
-    </GridToolbarContainer>
-  );
+const handleDelete = async (selectedRow: GridRowSelectionModel) => {
+  console.log('entries', [...selectedRow])
+  const userIds = Array.from(selectedRow).map(value => value);
+  if (userIds.length <= 0) {
+    console.log('user ids is 0')
+    return
+  }
+  console.log('userIds', userIds)
+  const deletedCount = await sendToBackground({
+    name: 'delete/blogger',
+    body: {
+      type: 'FANS_SUMMARY',
+      ids: userIds
+    }
+  });
+  console.log(deletedCount)
 }
 
 const getFansSummaryWithBlogger = async () => {
@@ -43,6 +48,7 @@ const getFansSummaryWithBlogger = async () => {
 
 export const FansSummaryTable = () => {
   const [fansSummary, setFansSummary] = useState<FansSummary[]>([])
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
 
   useEffect(() => {
     getFansSummaryWithBlogger().then(fansSummary => setFansSummary(fansSummary))
@@ -52,8 +58,25 @@ export const FansSummaryTable = () => {
     getFansSummaryByMessage(setFansSummary);
   }, [window.location.href]);
 
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton/>
+        <GridToolbarFilterButton/>
+        <GridToolbarDensitySelector/>
+        <GridToolbarExport
+          excelOptions={{disableToolbarButton: true}}
+        />
+        <Button onClick={() => handleDelete(rowSelectionModel)}>删除</Button>
+      </GridToolbarContainer>
+    );
+  }
+
   return <React.Fragment>
     <DataGridPremium
+      onRowSelectionModelChange={(newRowSelectionModel) => {
+        setRowSelectionModel(newRowSelectionModel)
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
       slots={{toolbar: CustomToolbar}}
       getRowId={row => row.userId}
