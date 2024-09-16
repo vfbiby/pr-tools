@@ -1,9 +1,13 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import {zhCN} from "~src/localization/zh-CN";
 import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-premium";
 import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
-import {CustomToolbar, DeleteButton, getDataAnd, handleDelete} from "~src/components/common-utils";
+import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
+
+export function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
+  getTableWithOtherTable('FANS_SUMMARY', 'BLOGGER_INFO', "userId").then(fansSummary => setFansSummary(fansSummary))
+}
 
 export const FansSummaryTable = () => {
   const [fansSummary, setFansSummary] = useState<FansSummary[]>([])
@@ -17,7 +21,7 @@ export const FansSummaryTable = () => {
     return (
       <CustomToolbar
         deleteButton={<DeleteButton
-          onClick={() => handleDelete(rowSelectionModel, () => getDataAnd(setFansSummary))}
+          onClick={() => handleDelete('FANS_SUMMARY', rowSelectionModel, () => getDataAnd(setFansSummary))}
           selectedRows={rowSelectionModel}/>}/>
     )
   }, [rowSelectionModel]);

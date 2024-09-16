@@ -9,7 +9,7 @@ export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
 }
 
-const saveDataByMessage = async (data: any, type: any) => {
+export const saveDataByMessage = async (data: any, type: string) => {
   const resp = await sendToBackground({
     name: 'save/blogger',
     body: {data, type}

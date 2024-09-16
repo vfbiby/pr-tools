@@ -1,4 +1,4 @@
-import React, {type Dispatch, type ReactElement, type SetStateAction} from "react";
+import React, {type ReactElement} from "react";
 import {
   type GridRowSelectionModel,
   GridToolbarColumnsButton,
@@ -46,13 +46,13 @@ export async function deleteRecordsByIdsThroughMessage(type: string, userIds: (s
   });
 }
 
-export const handleDelete = async (selectedRow: GridRowSelectionModel, refresh?: () => void) => {
+export const handleDelete = async (table: string, selectedRow: GridRowSelectionModel, refresh?: () => void) => {
   const userIds = Array.from(selectedRow).map(value => value);
   if (userIds.length <= 0) {
     console.log('0 user ids to delete')
     return
   }
-  await deleteRecordsByIdsThroughMessage('FANS_SUMMARY', userIds);
+  await deleteRecordsByIdsThroughMessage(table, userIds);
   refresh()
 }
 
@@ -65,6 +65,3 @@ export const getTableWithOtherTable = async (table: string, otherTable: string, 
   return tableRecords;
 }
 
-export function getDataAnd<T>(setFansSummary: Dispatch<SetStateAction<T[]>>) {
-  getTableWithOtherTable('FANS_SUMMARY', 'BLOGGER_INFO', "userId").then(fansSummary => setFansSummary(fansSummary))
-}
