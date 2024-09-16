@@ -1,4 +1,4 @@
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {BloggerInfo} from "~src/columns/BloggerInfo";
 
 export type FansProfileAge = { group: string; percent: number }
 export type FansProfileInterest = { name: string; percent: number }
@@ -10,7 +10,7 @@ type FansProfileGender = { male: number, female: number };
 export type FansProfile = {
   "userId": string;
   "createdAt": Date;
-  "blogger": IBloggerInfo;
+  "blogger": BloggerInfo;
   "ages": FansProfileAge[],
   "gender": FansProfileGender,
   "interests": FansProfileInterest[],

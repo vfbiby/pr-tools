@@ -1,5 +1,5 @@
 import type {GridColDef} from "@mui/x-data-grid-premium";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {BloggerInfo} from "~src/columns/BloggerInfo";
 
 import {
   dateValueFormatter,
@@ -10,7 +10,7 @@ import {
   numberRender
 } from "~src/libs/renders";
 
-export const columns: GridColDef<IBloggerInfo>[] = [
+export const columns: GridColDef<BloggerInfo>[] = [
   {
     field: 'userId', headerName: 'ID', width: 90,
     renderCell: IDRender

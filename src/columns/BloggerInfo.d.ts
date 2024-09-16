@@ -1,4 +1,4 @@
-export type IBloggerInfo = {
+export type BloggerInfo = {
   createdAt: Date;
   "userId": string;
   "valid": number;
@@ -50,15 +50,15 @@ export type IBloggerInfo = {
   "mEngagementNumMcn": number;
 }
 
-export type IBloggerInfoResponse = {
+export type BloggerInfoResponse = {
   "code": number;
   "msg": string;
   "guid": unknown;
   "success": boolean;
-  data: IBloggerInfo;
+  data: BloggerInfo;
 }
 
-export type IVisitBloggerInfo = {
+export type VisitBloggerInfo = {
   bloggerId: string,
-  info: { bloggerInfo: Partial<IBloggerInfo> }
+  info: { bloggerInfo: Partial<BloggerInfo> }
 };

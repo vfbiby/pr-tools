@@ -3,11 +3,11 @@ import {Box} from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Avatar from "@mui/material/Avatar";
 import ApartmentIcon from "@mui/icons-material/Apartment";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {BloggerInfo} from "~src/columns/BloggerInfo";
 import type {NoteType} from "~src/columns/NotesRate";
 import React from "react";
 
-export const bloggerNameRender = (params: GridRenderCellParams<any, IBloggerInfo>) => {
+export const bloggerNameRender = (params: GridRenderCellParams<any, BloggerInfo>) => {
   return <span>{params.value?.name.trim()}</span>
 };
 

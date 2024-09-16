@@ -1,9 +1,9 @@
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {BloggerInfo} from "~src/columns/BloggerInfo";
 
 export type FansSummary = {
   "userId": string;
   "createdAt": Date;
-  "blogger": IBloggerInfo;
+  "blogger": BloggerInfo;
   "fansNum": number;
   "fansIncreaseNum": number;
   "fansGrowthRate": string;

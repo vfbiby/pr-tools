@@ -1,4 +1,4 @@
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {BloggerInfo} from "~src/columns/BloggerInfo";
 
 type NoteType = { contentTag: string, percent: string }
 
@@ -22,7 +22,7 @@ type Note = {
 }
 
 type NotesRate = {
-  "blogger": IBloggerInfo;
+  "blogger": BloggerInfo;
   "userId": string;
   "createdAt": Date;
   "noteNumber": number;

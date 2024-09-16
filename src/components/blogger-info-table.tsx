@@ -1,5 +1,5 @@
 import React, {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import type {BloggerInfo} from "~src/columns/BloggerInfo";
 import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/blogger-info-columns";
 import {zhCN} from "~src/localization/zh-CN";
@@ -8,13 +8,13 @@ import {getDataByMessage} from "~src/components/notes-rate-table";
 
 const BLOGGER_INFO = 'BLOGGER_INFO';
 
-export function getBloggerInfo(setBloggerInfo: Dispatch<SetStateAction<IBloggerInfo[]>>) {
+export function getBloggerInfo(setBloggerInfo: Dispatch<SetStateAction<BloggerInfo[]>>) {
   getDataByMessage(BLOGGER_INFO)
-    .then((response: { data: IBloggerInfo[] }) => setBloggerInfo(response.data))
+    .then((response: { data: BloggerInfo[] }) => setBloggerInfo(response.data))
 }
 
 export function BloggerInfoTable() {
-  const [bloggerInfo, setBloggerInfo] = useState<IBloggerInfo[]>([])
+  const [bloggerInfo, setBloggerInfo] = useState<BloggerInfo[]>([])
   const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
 
   useEffect(() => {
