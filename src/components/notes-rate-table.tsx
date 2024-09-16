@@ -4,7 +4,6 @@ import {zhCN} from "~src/localization/zh-CN";
 import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/notes-rate-columns";
 import type {NotesRate} from "~src/columns/NotesRate";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
 import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
 const NOTES_RATE = 'NOTES_RATE';
@@ -22,21 +21,12 @@ export function getDataByMessage(type: string = NOTES_RATE) {
   });
 }
 
-const getNotesRateWithBlogger = async () => {
-  const {data: notesRates} = await getDataByMessage(NOTES_RATE) as { data: NotesRate[] };
-  const {data: bloggerInfos} = await getDataByMessage('BLOGGER_INFO') as { data: IBloggerInfo[] };
-  notesRates.map(notesRate => {
-    notesRate.blogger = bloggerInfos.find(blogger => blogger.userId === notesRate.userId)
-  })
-  return notesRates;
-}
-
 export const NotesRateTable = () => {
   const [notesRate, setNotesRate] = useState<NotesRate[]>([])
   const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
 
   useEffect(() => {
-    getNotesRateWithBlogger().then(notesRate => setNotesRate(notesRate))
+    getDataAnd(setNotesRate)
   }, []);
 
   const ConstructToolbar = useCallback(() => {

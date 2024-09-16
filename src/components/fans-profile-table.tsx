@@ -1,42 +1,38 @@
-import React, {type Dispatch, type SetStateAction, useEffect, useState} from "react";
+import React, {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import {zhCN} from "~src/localization/zh-CN";
-import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
-import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-premium";
 import type {FansProfile} from "~src/columns/FansProfile";
-import {getDataByMessage} from "~src/components/notes-rate-table";
 import {columns} from "~src/columns/fans-profile-columns";
+import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
-export function getFansProfileByMessage(setFansProfile: Dispatch<SetStateAction<FansProfile[]>>) {
-  getDataByMessage('FANS_PROFILE').then(response => {
-    setFansProfile(response.data)
-  })
-}
+const FANS_PROFILE = 'FANS_PROFILE';
 
-const getFansProfileWithBlogger = async () => {
-  const {data: fansProfiles} = await getDataByMessage('FANS_PROFILE') as { data: FansProfile[] };
-  const {data: bloggerInfos} = await getDataByMessage('BLOGGER_INFO') as { data: IBloggerInfo[] };
-  fansProfiles.map(fansProfile => {
-    fansProfile.blogger = bloggerInfos.find(blogger => blogger.userId === fansProfile.userId)
-  })
-  return fansProfiles;
+function getDataAnd<T>(setNotesRate: Dispatch<SetStateAction<T[]>>) {
+  getTableWithOtherTable(FANS_PROFILE, 'BLOGGER_INFO', "userId").then(notesRate => setNotesRate(notesRate))
 }
 
 export const FansProfileTable = () => {
   const [fansProfile, setFansProfile] = useState<FansProfile[]>([])
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
+
+  const ConstructToolbar = useCallback(() => {
+    const handleOnClick = () => handleDelete(FANS_PROFILE, rowSelectionModel, () => getDataAnd(setFansProfile));
+    return (
+      <CustomToolbar deleteButton={<DeleteButton onClick={handleOnClick} selectedRows={rowSelectionModel}/>}/>
+    )
+  }, [rowSelectionModel]);
 
   useEffect(() => {
-    getFansProfileWithBlogger().then(fansProfile => setFansProfile(fansProfile))
+    getDataAnd(setFansProfile)
   }, []);
-
-  useEffect(() => {
-    getFansProfileByMessage(setFansProfile);
-  }, [window.location.href]);
 
   return <React.Fragment>
     <DataGridPremium
+      onRowSelectionModelChange={(newRowSelectionModel) => {
+        setRowSelectionModel(newRowSelectionModel)
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      slots={{toolbar: GridToolbar}}
-      slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
+      slots={{toolbar: ConstructToolbar}}
       getRowId={row => row.userId}
       rows={fansProfile}
       initialState={{

@@ -6,7 +6,7 @@ import {zhCN} from "~src/localization/zh-CN";
 import {CustomToolbar, DeleteButton, handleDelete} from "~src/components/common-utils";
 import {getDataByMessage} from "~src/components/notes-rate-table";
 
-export const BLOGGER_INFO = 'BLOGGER_INFO';
+const BLOGGER_INFO = 'BLOGGER_INFO';
 
 export function getBloggerInfo(setBloggerInfo: Dispatch<SetStateAction<IBloggerInfo[]>>) {
   getDataByMessage(BLOGGER_INFO)
