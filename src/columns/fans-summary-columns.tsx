@@ -1,6 +1,6 @@
 import type {GridColDef} from "@mui/x-data-grid-premium";
 import {
-  bloggerNameRender,
+  bloggerNameRender, dateValueFormatter,
   IDRender,
   numberRender,
   PercentageRender
@@ -116,5 +116,11 @@ export const columns: GridColDef<FansSummary>[] = [
     width: 120,
     editable: true,
     renderCell: PercentageRender,
+  },
+  {
+    field: 'createdAt',
+    headerName: '添加时间',
+    width: 100,
+    valueFormatter: dateValueFormatter
   },
 ];

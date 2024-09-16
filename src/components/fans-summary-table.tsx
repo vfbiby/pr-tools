@@ -44,7 +44,7 @@ function DeleteButton(props: { onClick: () => Promise<void> }) {
   </Button>;
 }
 
-export async function deleteRecordsByIdsThroughMessage(type: string = 'FANS_SUMMARY', userIds: (string | number)[]) {
+export async function deleteRecordsByIdsThroughMessage(type: string, userIds: (string | number)[]) {
   await sendToBackground({
     name: 'delete/blogger',
     body: {

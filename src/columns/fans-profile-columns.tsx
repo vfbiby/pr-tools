@@ -1,5 +1,5 @@
 import type {GridColDef, GridRenderCellParams} from "@mui/x-data-grid-premium";
-import {bloggerNameRender, IDRender} from "~src/libs/renders";
+import {bloggerNameRender, dateValueFormatter, IDRender} from "~src/libs/renders";
 import type {
   FansProfile,
   FansProfileAge,
@@ -71,15 +71,21 @@ export const columns: GridColDef<FansProfile>[] = [
     renderCell: interestRender
   },
   {
-    field: 'provinces', headerName: '省份', width: 300,
+    field: 'provinces', headerName: '省份', width: 280,
     renderCell: provinceRender
   },
   {
-    field: 'cities', headerName: '城市', width: 300,
+    field: 'cities', headerName: '城市', width: 280,
     renderCell: cityRender
   },
   {
     field: 'devices', headerName: '设备', width: 300,
     renderCell: deviceRender
+  },
+  {
+    field: 'createdAt',
+    headerName: '添加时间',
+    width: 100,
+    valueFormatter: dateValueFormatter
   },
 ];
