@@ -5,7 +5,7 @@ import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
 import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
-export function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
+function getDataAnd(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
   getTableWithOtherTable('FANS_SUMMARY', 'BLOGGER_INFO', "userId").then(fansSummary => setFansSummary(fansSummary))
 }
 

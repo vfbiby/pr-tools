@@ -1,12 +1,19 @@
-import React, {type Dispatch, type SetStateAction, useEffect, useState} from "react";
+import React, {type Dispatch, type SetStateAction, useCallback, useEffect, useState} from "react";
 import {sendToBackground} from "@plasmohq/messaging";
 import {zhCN} from "~src/localization/zh-CN";
-import {DataGridPremium, GridToolbar} from "@mui/x-data-grid-premium";
+import {DataGridPremium, type GridRowSelectionModel} from "@mui/x-data-grid-premium";
 import {columns} from "~src/columns/notes-rate-columns";
 import type {NotesRate} from "~src/columns/NotesRate";
 import type {IBloggerInfo} from "~src/columns/BloggerInfo";
+import {CustomToolbar, DeleteButton, getTableWithOtherTable, handleDelete} from "~src/components/common-utils";
 
-export function getDataByMessage(type: string = 'NOTES_RATE') {
+const NOTES_RATE = 'NOTES_RATE';
+
+function getDataAnd<T>(setNotesRate: Dispatch<SetStateAction<T[]>>) {
+  getTableWithOtherTable(NOTES_RATE, 'BLOGGER_INFO', "userId").then(notesRate => setNotesRate(notesRate))
+}
+
+export function getDataByMessage(type: string = NOTES_RATE) {
   return sendToBackground({
     name: 'read/blogger',
     body: {
@@ -15,15 +22,8 @@ export function getDataByMessage(type: string = 'NOTES_RATE') {
   });
 }
 
-export function getNotesRateByMessage(setNotesRateInfo: Dispatch<SetStateAction<NotesRate[]>>) {
-  const notesRatePromise = getDataByMessage('NOTES_RATE');
-  notesRatePromise.then(response => {
-    setNotesRateInfo(response.data)
-  })
-}
-
 const getNotesRateWithBlogger = async () => {
-  const {data: notesRates} = await getDataByMessage('NOTES_RATE') as { data: NotesRate[] };
+  const {data: notesRates} = await getDataByMessage(NOTES_RATE) as { data: NotesRate[] };
   const {data: bloggerInfos} = await getDataByMessage('BLOGGER_INFO') as { data: IBloggerInfo[] };
   notesRates.map(notesRate => {
     notesRate.blogger = bloggerInfos.find(blogger => blogger.userId === notesRate.userId)
@@ -33,20 +33,26 @@ const getNotesRateWithBlogger = async () => {
 
 export const NotesRateTable = () => {
   const [notesRate, setNotesRate] = useState<NotesRate[]>([])
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
 
   useEffect(() => {
     getNotesRateWithBlogger().then(notesRate => setNotesRate(notesRate))
   }, []);
 
-  useEffect(() => {
-    getNotesRateByMessage(setNotesRate);
-  }, [window.location.href]);
+  const ConstructToolbar = useCallback(() => {
+    const handleOnClick = () => handleDelete(NOTES_RATE, rowSelectionModel, () => getDataAnd(setNotesRate));
+    return (
+      <CustomToolbar deleteButton={<DeleteButton onClick={handleOnClick} selectedRows={rowSelectionModel}/>}/>
+    )
+  }, [rowSelectionModel]);
 
   return <React.Fragment>
     <DataGridPremium
+      onRowSelectionModelChange={(newRowSelectionModel) => {
+        setRowSelectionModel(newRowSelectionModel)
+      }}
       localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
-      slots={{toolbar: GridToolbar}}
-      slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
+      slots={{toolbar: ConstructToolbar}}
       getRowId={row => row.userId}
       rows={notesRate}
       initialState={{

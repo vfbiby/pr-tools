@@ -34,7 +34,6 @@ export function BloggerInfoTable() {
     }}
     localeText={zhCN.components.MuiDataGrid.defaultProps.localeText}
     slots={{toolbar: ConstructToolbar}}
-    slotProps={{toolbar: {excelOptions: {disableToolbarButton: true}}}}
     getRowId={row => row.userId}
     rows={bloggerInfo}
     initialState={{
@@ -46,7 +45,7 @@ export function BloggerInfoTable() {
         }]
       },
       pagination: {
-        paginationModel: {pageSize: 10}
+        paginationModel: {pageSize: 20}
       }
     }}
     columns={columns}
