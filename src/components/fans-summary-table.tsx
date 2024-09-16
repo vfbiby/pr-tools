@@ -12,6 +12,8 @@ import type {FansSummary} from "~src/columns/FansSummary";
 import {columns} from "~src/columns/fans-summary-columns";
 import {Button} from "@mui/material";
 import {sendToBackground} from "@plasmohq/messaging";
+import DeleteIcon from '@mui/icons-material/Delete';
+import {red} from "@mui/material/colors";
 
 export function getFansSummaryByMessage(setFansSummary: Dispatch<SetStateAction<FansSummary[]>>) {
   getDataByMessage('FANS_PROFILE').then(response => {
@@ -67,7 +69,10 @@ export const FansSummaryTable = () => {
         <GridToolbarExport
           excelOptions={{disableToolbarButton: true}}
         />
-        <Button onClick={() => handleDelete(rowSelectionModel)}>删除</Button>
+        <Button onClick={() => handleDelete(rowSelectionModel)}>
+          <DeleteIcon sx={{pr: 1, fontSize: 28, color: red[600]}}/>
+          删除
+        </Button>
       </GridToolbarContainer>
     );
   }
