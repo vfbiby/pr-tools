@@ -44,7 +44,7 @@ const PgyFloat = () => {
 
   return (
     <div style={{margin: "200px 0 0 10px"}}>
-      {!openPopup && <button onClick={() => setOpenPopup(true)}>show</button>}
+      {!openPopup && <button onClick={() => setOpenPopup(true)}>Pr Tools</button>}
       <CustomTab open={openPopup} onClose={() => setOpenPopup(false)}/>
     </div>
   )
