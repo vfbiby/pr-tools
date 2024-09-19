@@ -1,12 +1,19 @@
-import type {PlasmoCSConfig} from "plasmo"
+import type {PlasmoCSConfig, PlasmoGetStyle} from "plasmo"
 import React, {useEffect, useState} from "react";
 import {LicenseInfo} from "@mui/x-license-pro";
 import {CustomTab} from "~src/components/custom-tab";
 import {extractBloggerIdFromPgyHomepage} from "~src/contents/xhs-explorer-inline-blogger-link";
 import {sendToBackground} from "@plasmohq/messaging";
+import styleText from "data-text:../style.css"
 
 export const config: PlasmoCSConfig = {
   matches: ["*://pgy.xiaohongshu.com/solar/pre-trade/blogger-detail/*"]
+}
+
+export const getStyle: PlasmoGetStyle = () => {
+  const style = document.createElement("style")
+  style.textContent = styleText
+  return style
 }
 
 export const saveDataByMessage = async (data: any, type: string) => {
@@ -43,8 +50,10 @@ const PgyFloat = () => {
   }, [])
 
   return (
-    <div style={{margin: "200px 0 0 10px"}}>
-      {!openPopup && <button onClick={() => setOpenPopup(true)}>Pr Tools</button>}
+    <div className="float">
+      {!openPopup &&
+        <button style={{width: "30px"}} onClick={() => setOpenPopup(true)}><span
+          style={{writingMode: "vertical-rl", textOrientation: 'upright'}}>pr tools</span></button>}
       <CustomTab open={openPopup} onClose={() => setOpenPopup(false)}/>
     </div>
   )

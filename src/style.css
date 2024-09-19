@@ -1,0 +1,15 @@
+@media screen and (min-width: 1300px) {
+    .float {
+        position: fixed;
+        top: calc(40vh);
+        left: calc(calc(calc(100vw - 1200px) / 2) - 35px);
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .float {
+        position: fixed;
+        top: calc(40vh);
+        left: 10px;
+    }
+}
