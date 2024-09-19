@@ -2,7 +2,7 @@
   "name": "pr-tools",
   "displayName": "小红书pr工具箱",
   "version": "0.0.1",
-  "description": "一个为小红书pr们提供方便的工具箱，包含点阅读率，点赞率等！还提供了浏览达人导出功能。",
+  "description": "一个为小红书pr们提供方便的工具箱，包含点阅读率，点赞率等！还提供了浏览达人导出功能。快速跳转到的页面！达人数据导出！",
   "author": "james",
   "scripts": {
     "dev": "plasmo dev",
