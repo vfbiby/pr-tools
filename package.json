@@ -20,7 +20,6 @@
     "@mui/x-data-grid-premium": "^7.16.0",
     "@mui/x-license-pro": "^6.10.2",
     "@plasmohq/messaging": "^0.6.2",
-    "@plasmohq/storage": "^1.12.0",
     "dexie": "^4.0.8",
     "dexie-react-hooks": "^1.1.7",
     "plasmo": "0.89.1",
